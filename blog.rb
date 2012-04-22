@@ -5,7 +5,6 @@ require 'json'
 require 'warden'
 require 'data_mapper'
 require 'openssl'
-require 'sinatra/base'
 require 'sinatra/static_assets'
 require 'date'
 require 'linguistics'
@@ -250,6 +249,8 @@ delete '/book/:id' do
   redirect '/'  
 end
 
+DataMapper.auto_upgrade!
+
 def pluralize(number, text)
   return text.en.plural if number != 1
   text
@@ -272,4 +273,3 @@ def relative_time(start_time)
        start_time.strftime("%m/%d/%Y")
   end
 end
-DataMapper.auto_upgrade!
