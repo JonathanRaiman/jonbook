@@ -11,7 +11,6 @@ require 'date'
 require 'linguistics'
 Linguistics::use( :en )
 
-DataMapper::Logger.new(STDOUT, :debug)
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
 class Book
