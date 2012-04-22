@@ -1,0 +1,47 @@
+<div class="mainpage_content">
+<table class="book_table"><tr>
+<form action="/book/create" method="POST">
+  <td colspan="2" style="text-align: center" class="book_details">Selling a book?</td></tr>
+  <tr><td><input type="text" name="name" id="name" placeholder="Title" style="width: 90%"></td><td><input type="text" name="author" id="author" placeholder="Author" style="width: 100%"></td></tr>
+  <td colspan="2"><textarea type="text" name="description" id="description" placeholder="description & condition" style="width: 100%; resize: vertical; max-height: 120px
+"></textarea></td></tr>
+  <tr><td colspan="2"><input type="number" name="price" min="0" max="999" id="price" value="0" style="width: 20%"/>€<input type="submit" value="Sell" style="float: right"/></td>
+</tr></table>
+</form>
+<script>
+var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
+$("#messenger").live('submit', function () {
+  $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
+  $('#body').val('');$('#recipient').val('');
+});
+$(function () {
+$("#recipient").autocomplete({
+      source: '/user/search',
+      position: {
+        my: "left bottom",
+        at: "left top"
+    }
+    });
+});
+</script>
+<% unless @books.empty? %>
+<table class="book_table">
+<tr><td colspan="5" class="table_header">Books:</td></tr>
+<tr><td></td><td class="book_details">Title</td><td class="book_details">Author</td><td class="book_details" style="text-align: right">Price</td><td></td></tr>
+<% @books.each do |book| %>
+<tr><td class="book_details_sold"><%= "(Sold)" if book.sold %></td><td><a href="/book/<%=book.id%>"><i><%=book.name%></i></a></td><td><a href="/book/<%=book.id%>">by <%= book.author%></a></td><td style="color: #444; text-align: right"><%= sprintf("%.2f", book.price) %>€</a><td class="book_details"><%if book.owner == env['warden'].user.id %><a href="/book/<%= book.id %>/delete">Remove</a><%else%><%= " added "+relative_time(Time.parse(book.created_at.to_s)) %></td><%end%>
+</tr>
+<% end %>
+</table>
+<%else%>
+<p>No books to trade.</p>
+<%end%>
+<h3>Conversations:</h3>
+<% unless @messages.empty? %>
+<ul>
+<% @messages.each do |m| %>
+<li><strong><%= User.get(m.sender).username %></strong> : <%= m.body %></li>
+<% end %>
+</ul>
+<% end %>
+</div>

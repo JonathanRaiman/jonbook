@@ -1,0 +1,26 @@
+<% if !env['warden'].user %>
+<div class="mainpage_content">
+	<table class="book_table">
+		<tr>
+			<td class="table_header" style="line-height: 2.5">
+				New here?
+			</td>
+		</tr>
+		<tr>
+			<td class="book_details" style="text-align: center">
+				Sign up:
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center">
+			<form action='/user/create' method='post'>
+  				<input type="text" name="username" placeholder="Username"/>
+  				<input type="password" name="password" placeholder="Password"/>
+  				<input type="submit" value="Sign up"/>
+  			</form>
+  			</td>
+  		</tr>
+  	</table>
+</div>
+<% end %>
+

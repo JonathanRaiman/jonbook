@@ -1,0 +1,19 @@
+<div class="mainpage_content">
+	<table class="book_table">
+		<tr>
+			<td colspan="2" class="table_header" style="color: #333">Are you sure you want to remove <i><%= @book.name %></i> ?
+			</td>
+		</tr>
+		<tr>
+		<form action="/book/<%= @book.id %>" method="post">
+		<input type="hidden" name="_method" value="delete" />
+			<td style="text-align: right">
+				<input type="submit" value="remove">
+			</td>
+			<td style="text-align: left">
+				or <a href="/" style="font-weight:bold">Cancel</a>
+			</td>
+		</form>
+		</tr>
+	</table>
+</div>
