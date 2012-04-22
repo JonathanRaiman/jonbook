@@ -272,24 +272,4 @@ def relative_time(start_time)
        start_time.strftime("%m/%d/%Y")
   end
 end
-#time options
-# def to_pretty(date)
-#     a = (Time.now.to_i-date.to_i)
-
-#     case a
-#       when 0..55 then return 'just now' 
-#       when 55..60 then return 'about a minute ago'
-#       when 61..119 then return 'a minute ago' #120 = 2 minutes
-#       when 120..1600 then return (a/60).to_i.to_s+' minutes ago'
-#       when 1601..3600 then return 'about an hour ago' # 3600 = 1 hour
-#       when 3601..7100 then return 'over an hour ago' # 3600 = 1 hour
-#       when 7101..82800 then return ((a+99)/3600).to_i.to_s+' hours ago' 
-#       when 82801..172000 then return 'a day ago' # 86400 = 1 day
-#       when 172001..518400 then return ((a+800)/(60*60*24)).to_i.to_s+' days ago'
-#       when 518400..1036800 then return 'a week ago'
-#     end
-#     return date.strftime(" on %d/%m/%Y")+' weeks ago'
-# end
-
-# wipes out existing data
 DataMapper.auto_upgrade!
