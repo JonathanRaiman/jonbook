@@ -74,7 +74,7 @@ end
 DataMapper.finalize
 
 
-User.create(:username => 'user', :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'), "secretsalt", 'qwerty'))
+#User.create(:username => 'user', :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'), "secretsalt", 'qwerty'))
 use Rack::Session::Cookie, :secret => "bla-bla-bla"
 
 use Warden::Manager do |manager|
