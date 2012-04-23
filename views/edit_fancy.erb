@@ -1,0 +1,57 @@
+<div class="mainpage_content">
+<table class="book_table">
+	<tr>
+		<td colspan="2" class="table_header"><i><%= @book.name %></i><%= " by "+ @book.author %></td>
+	</tr>
+<% if @book.owner == env['warden'].user.id %>
+	<form id="item_edition" data-id="<%= @book.id %>">
+		<tr>
+			<!-- <input name="_method" type="hidden" value="put" /> -->
+  			<td>
+  				<input type="text" name="name" id="name_editform" value="<%= @book.name %>" style="width: 90%">
+  			</td>
+  			<td>
+  				<input type="text" name="author" id="author_editform" value="<%= @book.author %>" style="width: 100%">
+  			</td>
+  		</tr>
+  			<td colspan="2"><textarea type="text" name="description" id="description_editform" style="width: 100%; resize: vertical; max-height: 120px"><%=@book.description%></textarea>
+  			</td>
+  		</tr>
+  		<tr>
+  			<td colspan="2">
+          <input type="number" name="price" min="0" max="999" id="price_editform" value="<%= sprintf("%.2f", @book.price) %>" style="width: 20%"/>€
+          <input type="button" value="Remove" onclick="removeitem('/book/<%= @book.id %>/delete')" style="float: right"/>
+          <input id="book_submit" type="submit" value="Update" style="float: right" />
+          <input id="sold_editform" name="sold" type="checkbox" value="sold" <%= @book.sold ? "checked" : "" %> style="float: right; display:inline-block"/><label for="sold" style="float:right">sold :</label>
+  			</td>
+		</tr>
+		</form>
+<% else %>
+		<tr>
+			<td colspan="2" class="book_details">Description & Condition :</td>
+		</tr>
+		<tr>
+			<td colspan="2"><%= @book.description %></td>
+		</tr>
+		<tr>
+			<td class="book_details">
+				Availability :
+			</td>
+			<td class="book_details">
+				Person of Interest :
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<% if @book.sold %>
+				<strong><%= "(sold)" %></strong>
+				<% else %>
+				<a href="#"><%="buy from "+User.get(@book.owner).username %></a>
+				<% end %>
+			</td>
+			<td>Added by <%= User.get(@book.owner).username %> <%= relative_time(Time.parse(@book.created_at.to_s)) %>.
+			</td>
+		</tr>
+<% end %>
+	</table>
+</div>

@@ -1,0 +1,12 @@
+<% unless @books.empty? %>
+<table class="book_table" id="book_listings">
+<tr><td colspan="5" class="table_header">Books:</td></tr>
+<tr><td></td><td class="book_details">Title</td><td class="book_details">Author</td><td class="book_details" style="text-align: right">Price</td><td></td></tr>
+<% @books.each do |book| %>
+<tr><td class="book_details_sold"><%= "(Sold)" if book.sold %></td><td><a href="/book/<%=book.id%>"><i><%=book.name%></i></a></td><td><a href="/book/<%=book.id%>">by <%= book.author%></a></td><td style="color: #444; text-align: right"><%= sprintf("%.2f", book.price) %>€</a><td class="book_details"><%if book.owner == env['warden'].user.id %><a href="/book/<%= book.id %>/delete">Remove</a><%else%><%= " added "+relative_time(Time.parse(book.created_at.to_s)) %></td><%end%>
+</tr>
+<% end %>
+</table>
+<%else%>
+<p>No books to trade.</p>
+<%end%>

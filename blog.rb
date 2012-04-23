@@ -165,6 +165,18 @@ post '/book/create' do
   end
 end
 
+post '/book/new' do
+  puts params[:name]
+  puts params[:author]
+  puts params[:price]
+  book = Book.new(:name => params[:name], :author => params[:author], :price => params[:price] ? params[:price] : 0, :description => params[:description], :owner => env['warden'].user.id, :created_at => Time.now)
+  if book.save
+    status 201
+  else
+    status 412 
+  end
+end
+
 # create new message   
 post '/message/create' do
   puts User.get(params[:sender]).username+" sends a message saying "+params[:body]+" to "+User.first(:username => params[:recipient]).username
@@ -203,6 +215,24 @@ get '/book/:id' do
   end
 end
 
+get '/listings' do
+  @books = Book.all(:order => :author)
+  erb :book_listings, :layout => false
+end
+
+post '/book' do
+  if !env['warden'].user
+  elsif Book.get(params[:id]) and !params[:delete]
+    @book = Book.get(params[:id])
+    @title = Book.get(params[:id]).name+" - Book Exchange"
+    erb :edit_fancy, :layout => false
+  elsif Book.get(params[:id]) and params[:delete]
+    @book = Book.get(params[:id])
+    @ajax = true
+    erb :delete, :layout => false
+  end
+end
+
 get '/user/search' do
   if env['warden'].user
     puts params[:term]
@@ -231,6 +261,29 @@ put '/book/:id' do
   else
     status 412
     redirect '/'   
+  end
+end
+
+post '/book/update' do
+  puts "I just received this: "+params[:id]
+  puts "\""+params[:description]+"\""
+  puts "\""+params[:author]+"\""
+  puts "\""+params[:name]+"\""
+  puts "\""+params[:price]+"\""
+  puts params[:sold] ? "true" : "false"
+  book             = Book.get(params[:id])
+  book.sold_at     = params[:sold] ?  Time.now : nil
+  book.description = params[:description]
+  book.name        = params[:name]
+  book.author      = params[:author]
+  book.price       = params[:price]
+  book.sold        = params[:sold]
+  if book.save
+    status 201
+    puts "book saved"
+  else
+    status 412
+    puts "cannot save book"
   end
 end
 

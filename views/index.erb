@@ -1,14 +1,35 @@
 <div class="mainpage_content">
-<table class="book_table"><tr>
-<form action="/book/create" method="POST">
+<table class="book_table" id="new_item_form"><tr>
+<form onsubmit="return false;" action="/book/create" method="POST">
   <td colspan="2" style="text-align: center" class="book_details">Selling a book?</td></tr>
   <tr><td><input type="text" name="name" id="name" placeholder="Title" style="width: 90%"></td><td><input type="text" name="author" id="author" placeholder="Author" style="width: 100%"></td></tr>
   <td colspan="2"><textarea type="text" name="description" id="description" placeholder="description & condition" style="width: 100%; resize: vertical; max-height: 120px
 "></textarea></td></tr>
   <tr><td colspan="2"><input type="number" name="price" min="0" max="999" id="price" value="0" style="width: 20%"/>€<input type="submit" value="Sell" style="float: right"/></td>
-</tr></table>
+</tr>
 </form>
+</table>
 <script>
+$(function () {
+      $("#new_item_form form").attr("action", "");
+      $("#new_item_form form").attr("method", "");
+      $("#new_item_form form").live('submit',
+            function () {
+                  $.post('/book/new', {
+                  "name":$('#name').val(),
+                  "price": $('#price').val(),
+                  "author": $('#author').val(),
+                  "description": $('#description').val()
+                  },
+            function () {
+                  $('#name').val('');
+                  $('#price').val('');
+                  $('#author').val('');
+                  $('#description').val('');
+                  updatelistings();
+            });
+      });
+});
 var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
 $("#messenger").live('submit', function () {
   $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
@@ -23,9 +44,118 @@ $("#recipient").autocomplete({
     }
     });
 });
+function updatelistings () {
+      $.get('/listings', function (data){
+            $("#book_listings").html(data);
+      });
+};
+
+// setInterval ("updatelistings()", 5000);
+
+$("td a").live('click', function (e) {
+      e.preventDefault();
+      if ($(this).attr("href")){
+            var input = $(this).attr('href').split('/');
+            if (input[1] == "book" && input[3]==null){
+                  $.post('/book', {id:input[2]}, function (data){
+                        $.fancybox(
+                              data,
+                              {
+                                    
+                                  'overlayShow'   : true,
+                                  'transitionIn'  : 'elastic',
+                                  'transitionOut' : 'elastic',
+                                  'overlayColor'  : '#000',
+                                  'overlayOpacity': 0.3,
+                                  'autoScale'     : true,
+                                  'scrolling'     : 'no'
+                        });
+                  });
+            }
+            else if (input[1] == "book" && input[3]=="delete") {
+                  $.post('/book', {id:input[2], delete : "true"}, function (data){
+                        $.fancybox(
+                              data,
+                              {
+                                    
+                                  'overlayShow'   : true,
+                                  'transitionIn'  : 'elastic',
+                                  'transitionOut' : 'elastic',
+                                  'overlayColor'  : '#000',
+                                  'overlayOpacity': 0.3,
+                                  'autoScale'     : true,
+                                  'scrolling'     : 'no'
+                              });
+                        });
+                  }
+            else {
+                  location.href=$(this).attr('href');
+            }
+      }
+      
+      
+});
+function removeitem (address) {
+      var input = address.split('/');
+      if (input[1] == "book" && input[3]==null){
+            $.post('/book', {id:input[2]}, function (data){
+            $.fancybox(
+            data,
+            {
+                  
+                'overlayShow'   : true,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'overlayColor'  : '#000',
+                'overlayOpacity': 0.3,
+                'autoScale'     : true,
+                'scrolling'     : 'no'
+            });
+            });
+      }
+      else if (input[1] == "book" && input[3]=="delete") {
+            $.post('/book', {id:input[2], delete : "true"}, function (data){
+            $.fancybox(
+            data,
+            {
+                  
+                'overlayShow'   : true,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'overlayColor'  : '#000',
+                'overlayOpacity': 0.3,
+                'autoScale'     : true,
+                'scrolling'     : 'no'
+            });
+            });
+      }
+      else {
+            location.href=$(this).attr('href');
+      }
+};
+
+$("#item_edition").live('submit', function (e){
+      e.preventDefault();
+      console.log($("#item_edition").attr("data-id"));
+      console.log($("#sold_editform").attr("checked"));
+      console.log($("#description_editform").val());
+      $.post('/book/update', {
+            "id"  :$("#item_edition").attr("data-id"),
+            "name":$('#name_editform').val(),
+            "price": $('#price_editform').val(),
+            "author": $('#author_editform').val(),
+            "sold": $('#sold_editform').attr("checked"),
+            "description": $('#description_editform').val()
+            },
+            function () {
+                  $.fancybox.close();
+                  updatelistings();
+            }
+      );
+});
 </script>
 <% unless @books.empty? %>
-<table class="book_table">
+<table class="book_table" id="book_listings">
 <tr><td colspan="5" class="table_header">Books:</td></tr>
 <tr><td></td><td class="book_details">Title</td><td class="book_details">Author</td><td class="book_details" style="text-align: right">Price</td><td></td></tr>
 <% @books.each do |book| %>
@@ -34,7 +164,7 @@ $("#recipient").autocomplete({
 <% end %>
 </table>
 <%else%>
-<p>No books to trade.</p>
+<p id="book_listings">No books to trade.</p>
 <%end%>
 <h3>Conversations:</h3>
 <% unless @messages.empty? %>
@@ -44,4 +174,5 @@ $("#recipient").autocomplete({
 <% end %>
 </ul>
 <% end %>
+<input id="button" type="button" value="Click Me"/>
 </div>
