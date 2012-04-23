@@ -1,40 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<%= stylesheet_link_tag "/normal.css" %>
-<%= stylesheet_link_tag "/fancybox/jquery.fancybox-1.3.4.css" %>
-<%= javascript_script_tag "/jquery.min.js" %>
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>	
-<title><%= @title ? @title : "Book Exchange" %></title>
-<meta charset=utf-8 />
-</head>
-<body>
-<div class="topbar"><table><tr><td><a class="mainpage_logo" href="/">Book Exchange</a></td>
+	<head>
+		<%= stylesheet_link_tag "/normal.css" %>
+
+		<%= stylesheet_link_tag "/fancybox/jquery.fancybox-1.3.4.css" %>
+
+		<%= javascript_script_tag "/jquery.min.js" %>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+		<script type="text/javascript" src="fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+
+		<title><%= @title ? @title : "Book Exchange" %></title>
+
+		<meta charset=utf-8 />
+
+	</head>
+
+	<body>
+		<div class="topbar">
+			<table>
+				<tr>
+					<td>
+						<a class="mainpage_logo" href="/">Book Exchange</a>
+					</td>
 <% if !env['warden'].user %>
-<form action='/login' method='post'>
-  <td style="text-align: right"><label for="username">  Username </label><input type="text" name="username"/><label for="password">  Password </label><input type="password" name="password"/></td>
-  <td><input type="submit" value="Log in"/></td>
-</form><td><% if url.split('/')[3] != "login" %> or <a href="/login">Sign up</a></td><% end %>
-<% else %><td style="text-align: right" class="mainpage_logout">Signed up as <font style="color:white"><%= env['warden'].user.username %></font>, <input type="button" onClick="location.href='/logout'" value="Logout?" style="display: inline-block; vertical-align: middle; margin-bottom: 7px"/></td><% end %>
-</tr></table></div>
+	<form action='/login' method='post'>
+					<td style="text-align: right">
+						<label for="username">  Username </label>
+						<input type="text" name="username"/>
+						<label for="password">  Password </label>
+						<input type="password" name="password"/>
+					</td>
+					<td>
+						<input type="submit" value="Log in"/>
+					</td>
+	</form>
+					<td>
+	<% if url.split('/')[3] != "login" %> or <a href="/login">Sign up</a></td><% end %>
+<% else %>
+					<td style="text-align: right" class="mainpage_logout"><font class="signin_comment">Signed up as </font><font style="color:white"><%= env['warden'].user.username %></font>, 
+						<input type="button" onClick="location.href='/logout'" value="Logout?" style="display: inline-block; vertical-align: middle; margin-bottom: 7px"/>
+					</td>
+<% end %>
+				</tr>
+			</table>
+		</div>
 
 <%= yield %>
 
 <% if env['warden'].user %>
-<div class="bottombar">
-<form onsubmit="return false;" id="messenger">
-  <table><tr><td>
-  <label for="recipient">To:</label></td><td>
-  <input type="text" name="recipient" id="recipient" autocomplete="off"></td>
-  <td><input type="text" name="body" id="body"></td>
-  <td><input type="submit" value="Send"/></td>
-</tr>
-</table> 
-<input type="hidden" name="sender" id="sender" value="<%= env['warden'].user.id %>"/>
-</form>
-</div>
-<% end %>
-</body>
+		<div class="bottombar">
+			<form onsubmit="return false;" id="messenger">
+				<table>
+					<tr>
+						<td>
+							<label for="recipient">To:</label>
+						</td>
+						<td>
+							<input type="text" name="recipient" id="recipient" autocomplete="off">
+						</td>
+						<td>
+							<input type="text" name="body" id="body">
+						</td>
+						<td>
+							<input type="submit" value="Send"/>
+						</td>
+					</tr>
+				</table>
+
+				<input type="hidden" name="sender" id="sender" value="<%= env['warden'].user.id %>"/>
+			</form>
+		</div>
+	<% end %>
+	</body>
 </html>

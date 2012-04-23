@@ -18,25 +18,6 @@ body {
   color: rgba(255, 255, 255, 0.85);
   background: #ea4c89;
 }
-#webmaster {
-    margin-top: 30px;
-    padding-bottom: 30px;
-    display: block;
-    text-align: center;
-    position: absolute;
-    width: 100%;
-    bottom: 0px;
-    font: 14px Lucida Grande, sans-serif;
-    color: rgb(200,210,200);
-}
-#webmaster a {
-    display: inline-block;
-    text-decoration: none;
-    color: white;
-}
-.txtpurple{
-    color: rgb(171, 129, 255);
-}
 td, td a, td a i{
     color: black;
 }
@@ -198,7 +179,9 @@ i{
 }
 .bottombar input[type="text"],
 .topbar input[type="text"],
-.topbar input[type="password"]{
+.topbar input[type="password"],
+#new_item_form input[type="text"],
+#new_item_form textarea{
     border: 1px solid #BDC7D8;
     -webkit-user-select: text;
     outline: none;
@@ -240,6 +223,7 @@ background: rgb(243, 246, 250);
     width: 50px;
     height: 30px;
     font-size: 13px;
+    -webkit-appearance: none;
 }
 /*
 SIGNIN BUTTONS
@@ -251,14 +235,30 @@ SIGNIN BUTTONS
 {
     display: none;
 }
-/*{
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
-    width: 100px;
-    height: 40px;
-    font-size: 15px;
-}*/
+/*
+Remove:
+
+    "Signed up as *****,"
+
+when page is too small
+*/
+.mainpage_logout .signin_comment{
+    display: none;
+}
+/*
+Make vertical login box appear:
+
+        Sign in:
+
+        Username
+        ••••••••
+
+        New here?
+
+        Username
+        ••••••••
+
+*/
 .mainpage_small_login, .mainpage_small_login input{
     display: block;
 }
@@ -280,9 +280,6 @@ SIGNIN BUTTONS
     height: 40px;
     font-size: 15px;
 }
-/*
-SIGNUP BUTTONS
-*/
 .mainpage_signup input[type="text"]{
     position: absolute;
     margin-left: -100px;
