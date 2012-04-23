@@ -1,5 +1,12 @@
 <% if !env['warden'].user %>
 <div class="mainpage_content">
+	<span class="mainpage_small_login">
+		<form action='/login' method='post' >
+  				<input type="text" name="username"/>
+  				<input type="password" name="password"/>
+				<input type="submit" value="Log in"/>
+		</form>
+	</span>
 	<table class="book_table">
 		<tr>
 			<td class="table_header" style="line-height: 2.5">

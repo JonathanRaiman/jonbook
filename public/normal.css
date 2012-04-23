@@ -84,6 +84,9 @@ i{
     color: #D8DFEA;
     z-index: 3000;
     white-space:nowrap;
+    -moz-box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
+    -webkit-box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
+    box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
 }
 .topbar table{
     width: 100%;
@@ -210,13 +213,18 @@ i{
 background: rgb(243, 246, 250);
 }
 
+.mainpage_small_login{
+    display: none;
+}
 @media handheld, only screen and (max-width: 650px){
 .book_table {
   width: 95%;
 }
 .topbar {
-    height: 50px;
     position:absolute;
+    -moz-box-shadow:  none;
+    -webkit-box-shadow:  none;
+    box-shadow:  none;
 }
 .topbar label{
     position: absolute;
@@ -232,11 +240,6 @@ background: rgb(243, 246, 250);
     position: absolute;
     right: 115px;
 }
-.mainpage_content{
-    padding-top: 70px;
-    padding-bottom:70px;
-    padding-left: 10px;
-}
 #new_item_form input[type="submit"]{
     width: 50px;
     height: 30px;
@@ -245,23 +248,34 @@ background: rgb(243, 246, 250);
 /*
 SIGNIN BUTTONS
 */
-.topbar input[type="text"]{
-    position: absolute;
-    right: 115px;
-    bottom: 5px;
-    width: 100px;
+.topbar label,
+.topbar input[type="text"],
+.topbar input[type="password"],
+.topbar input[type="submit"]
+{
+    display: none;
 }
-.topbar input[type="password"]{
-    position: absolute;
-    right: 225px;
-    bottom: 5px;
-    width: 100px;
-}
-.topbar input[type="submit"]{
+/*{
     position: absolute;
     right: 5px;
     bottom: 5px;
     width: 100px;
+    height: 40px;
+    font-size: 15px;
+}*/
+.mainpage_small_login, .mainpage_small_login input{
+    display: block;
+}
+.mainpage_small_login input{
+    width: 200px;
+    position: relative;
+    margin-top: 5px;
+    margin-left: -100px;
+    left: 50%;
+}
+.mainpage_small_login input[type="submit"]{
+    width: 100px;
+    margin-left: -50px;
     height: 40px;
     font-size: 15px;
 }
@@ -273,52 +287,24 @@ SIGNUP BUTTONS
     margin-left: -100px;
     left: 50%;
     right: 115px;
-    top: 120px;
+    top: 230px;
     width: 200px;
 }
 .mainpage_signup input[type="password"]{
     position: absolute;
     margin-left: -100px;
     left: 50%;
-    top: 150px;
+    top: 260px;
     width: 200px;
 }
 .mainpage_signup input[type="submit"]{
     position: absolute;
     margin-left: -50px;
     left: 50%;
-    top: 180px;
+    top: 290px;
     width: 100px;
     height: 40px;
     font-size: 15px;
-}
-/*
---------- LOGO ---------
-*/
-.topbar .mainpage_logo{
-    position: absolute;
-    height: 20px;
-    vertical-align: middle;
-    margin-top: -10px;
-    top: 50%;
-}
-.topbar .mainpage_logout{
-    position: absolute;
-    height: 20px;
-    vertical-align: middle;
-    margin-top: -10px;
-    top: 50%;
-    right: 10px;
-}
-}
-@media handheld, only screen and (max-width: 430px){
-.topbar .mainpage_logo{
-    display: none;
-}
-.topbar .mainpage_logout{
-    width: 200px;
-    margin-right: -100px;
-    right: 50%;
 }
 }
 
