@@ -84,6 +84,7 @@ i{
     color: #D8DFEA;
     z-index: 3000;
     white-space:nowrap;
+    border-bottom: 1px solid #133783;
     -moz-box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
     -webkit-box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
     box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
@@ -176,14 +177,22 @@ i{
     height: 26px;
 }
 
-.bottombar label, .bottombar a, .topbar label, .topbar a, .topbar td, .bottombar td{
+.bottombar label,
+.bottombar a,
+.topbar label,
+.topbar a,
+.topbar td,
+.bottombar td{
     color: #D8DFEA;
 }
 
 .topbar label{
     font-size: 10px;
 }
-.bottombar label:hover, .bottombar a:hover, .topbar label:hover, .topbar a:hover{
+.bottombar label:hover,
+.bottombar a:hover,
+.topbar label:hover,
+.topbar a:hover{
     color:white;
 }
 .bottombar input[type="text"],
@@ -226,20 +235,6 @@ background: rgb(243, 246, 250);
     -webkit-box-shadow:  none;
     box-shadow:  none;
 }
-.topbar label{
-    position: absolute;
-    bottom: 32px;
-    width: 100px;
-    text-align: left;
-}
-.topbar label[for="password"]{
-    position: absolute;
-    right: 225px;
-}
-.topbar label[for="username"]{
-    position: absolute;
-    right: 115px;
-}
 #new_item_form input[type="submit"]{
     width: 50px;
     height: 30px;
@@ -272,6 +267,11 @@ SIGNIN BUTTONS
     margin-top: 5px;
     margin-left: -100px;
     left: 50%;
+    border: 1px solid #BDC7D8;
+    -webkit-user-select: text;
+    outline: none;
+    color: #777;
+    -webkit-appearance: none;
 }
 .mainpage_small_login input[type="submit"]{
     width: 100px;
@@ -289,6 +289,11 @@ SIGNUP BUTTONS
     right: 115px;
     top: 230px;
     width: 200px;
+    border: 1px solid #BDC7D8;
+    -webkit-user-select: text;
+    outline: none;
+    color: #777;
+    -webkit-appearance: none;
 }
 .mainpage_signup input[type="password"]{
     position: absolute;
@@ -296,6 +301,11 @@ SIGNUP BUTTONS
     left: 50%;
     top: 260px;
     width: 200px;
+    border: 1px solid #BDC7D8;
+    -webkit-user-select: text;
+    outline: none;
+    color: #777;
+    -webkit-appearance: none;
 }
 .mainpage_signup input[type="submit"]{
     position: absolute;
@@ -305,6 +315,7 @@ SIGNUP BUTTONS
     width: 100px;
     height: 40px;
     font-size: 15px;
+    -webkit-appearance: none;
 }
 }
 
