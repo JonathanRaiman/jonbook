@@ -189,6 +189,13 @@ i{
     -webkit-appearance: none;
 }
 
+#new_item_form input[type="number"]{
+    border: 1px solid #BDC7D8;
+    outline: none;
+    color: #777;
+    -webkit-appearance: none;
+}
+
 .mainpage_content{
     padding-top: 50px;
     padding-bottom:50px;
