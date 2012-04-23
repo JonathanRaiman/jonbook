@@ -13,15 +13,6 @@ body, html {
 body {
     background: rgb(254,254,254);
 }
-#canvas {
-    background: rgb(30,31,30);
-    width: 100%;
-    height: 100%;
-    position: static;
-    margin: 0px;
-    padding: 0px;
-    /*margin-top: 50px;*/
-}
 ::selection,::-moz-selection {
   color: #fff;
   color: rgba(255, 255, 255, 0.85);
@@ -133,6 +124,7 @@ i{
     -webkit-box-shadow:  inset 0 0 5px 1px #1A356E;
     box-shadow:  inset 0 0 5px 1px #1A356E;
     background: rgb(85, 108, 157);
+    -webkit-appearance: none;
 }
 
 .mainpage_content input[type="submit"],
@@ -191,7 +183,9 @@ i{
 .bottombar label:hover, .bottombar a:hover, .topbar label:hover, .topbar a:hover{
     color:white;
 }
-.bottombar input[type="text"], .topbar input[type="text"]{
+.bottombar input[type="text"],
+.topbar input[type="text"],
+.topbar input[type="password"]{
     border: 1px solid #BDC7D8;
     -webkit-user-select: text;
     outline: none;
@@ -220,10 +214,112 @@ background: rgb(243, 246, 250);
 .book_table {
   width: 95%;
 }
+.topbar {
+    height: 50px;
+    position:absolute;
+}
 .topbar label{
+    position: absolute;
+    bottom: 32px;
+    width: 100px;
+    text-align: left;
+}
+.topbar label[for="password"]{
+    position: absolute;
+    right: 225px;
+}
+.topbar label[for="username"]{
+    position: absolute;
+    right: 115px;
+}
+.mainpage_content{
+    padding-top: 70px;
+    padding-bottom:70px;
+    padding-left: 10px;
+}
+#new_item_form input[type="submit"]{
+    width: 50px;
+    height: 30px;
+    font-size: 13px;
+}
+/*
+SIGNIN BUTTONS
+*/
+.topbar input[type="text"]{
+    position: absolute;
+    right: 115px;
+    bottom: 5px;
+    width: 100px;
+}
+.topbar input[type="password"]{
+    position: absolute;
+    right: 225px;
+    bottom: 5px;
+    width: 100px;
+}
+.topbar input[type="submit"]{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+}
+/*
+SIGNUP BUTTONS
+*/
+.mainpage_signup input[type="text"]{
+    position: absolute;
+    margin-left: -100px;
+    left: 50%;
+    right: 115px;
+    top: 120px;
+    width: 200px;
+}
+.mainpage_signup input[type="password"]{
+    position: absolute;
+    margin-left: -100px;
+    left: 50%;
+    top: 150px;
+    width: 200px;
+}
+.mainpage_signup input[type="submit"]{
+    position: absolute;
+    margin-left: -50px;
+    left: 50%;
+    top: 180px;
+    width: 100px;
+    height: 40px;
+    font-size: 15px;
+}
+/*
+--------- LOGO ---------
+*/
+.topbar .mainpage_logo{
+    position: absolute;
+    height: 20px;
+    vertical-align: middle;
+    margin-top: -10px;
+    top: 50%;
+}
+.topbar .mainpage_logout{
+    position: absolute;
+    height: 20px;
+    vertical-align: middle;
+    margin-top: -10px;
+    top: 50%;
+    right: 10px;
+}
+}
+@media handheld, only screen and (max-width: 430px){
+.topbar .mainpage_logo{
     display: none;
 }
-
+.topbar .mainpage_logout{
+    width: 200px;
+    margin-right: -100px;
+    right: 50%;
+}
 }
 
     /* 
