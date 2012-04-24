@@ -226,6 +226,19 @@ get '/book/:id' do
   end
 end
 
+ # edit task
+get '/inbox' do
+  if !env['warden'].user
+    session[:crumb_path] = env['PATH_INFO']
+    redirect '/login'
+  else
+    user = env['warden'].user
+    @messages = Message.all(:conditions =>["sender = ? OR recipient = ?", user.id, 
+user.id], :order => :sent_at)
+    erb :inbox_listings
+  end
+end
+
 get '/user/:id' do
   if !env['warden'].user
     session[:crumb_path] = env['PATH_INFO']

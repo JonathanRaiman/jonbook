@@ -1,0 +1,8 @@
+<ul id="inbox_listings">
+<% unless @messages.empty? %>
+	<% @messages.each do |m| %>
+		<li><%= m.body %><%= " sent at "+relative_time(Time.parse(m.sent_at.to_s)) %>
+		</li>
+	<%end%>
+<%end%>
+</ul>
