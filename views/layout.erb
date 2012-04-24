@@ -41,8 +41,9 @@
 					<td>
 	<% if url.split('/')[3] != "login" %> or <a href="/login">Sign up</a></td><% end %>
 <% else %>
+					
 					<td style="text-align: right" class="mainpage_logout"><font class="signin_comment">Signed up as </font><a href="/user/<%=env['warden'].user.id%>" style="color:white"><%= env['warden'].user.username %></a>, 
-						<input type="button" onClick="location.href='/logout'" value="Logout?" style="display: inline-block; vertical-align: middle; margin-bottom: 7px"/>
+						<input type="button" onClick="location.href='/logout'" value="Logout?" style="display: inline-block; vertical-align: middle; margin-bottom: 7px"/><a href="/inbox">Inbox</a>
 					</td>
 <% end %>
 				</tr>
@@ -60,7 +61,13 @@
 							<label for="recipient">To:</label>
 						</td>
 						<td>
-							<input type="text" name="recipient" id="recipient" autocomplete="off">
+							<select name="recipient" id="recipient">
+								<% @users.each do |user|%>
+								<% if user.username != env['warden'].user.username %>
+								<option value="<%=user.username%>"><%=user.username%></option>
+								<% end%>
+								<% end%>
+							</select>
 						</td>
 						<td>
 							<input type="text" name="body" id="body">

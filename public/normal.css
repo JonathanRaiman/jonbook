@@ -237,9 +237,55 @@ background: rgb(243, 246, 250);
     padding-left: 0px;
 }
 
+.conversation {
+    width: 100%;
+    border-spacing: 0px;
+    color: #333;
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.8);
+}
+
+.conversation_speaker, .conversation_user {
+    width: 10%;
+    background: rgb(216, 223, 234);
+    color: black;
+    text-align: center;
+}
+.conversation_user{
+    background: rgb(210, 252, 175);
+}
+.conversation_domestic{
+   background: rgb(210, 252, 175);
+   padding: 8px 4px;
+    -webkit-border-radius: 8px 0px 0px 8px;
+     -khtml-border-radius: 8px 0px 0px 8px;
+       -moz-border-radius: 8px 0px 0px 8px;
+            border-radius: 8px 0px 0px 8px;
+}
+.conversation_third_party{
+   background: rgb(216, 223, 234);
+   padding: 8px 4px;
+    -webkit-border-radius: 0px 8px 8px 0px;
+     -khtml-border-radius: 0px 8px 8px 0px;
+       -moz-border-radius: 0px 8px 8px 0px;
+            border-radius: 0px 8px 8px 0px;
+}
+
+.conversation .book_details {
+    width: 80px;
+    text-align: center;
+    padding: 4px 4px;
+
+}
+
 @media handheld, only screen and (max-width: 650px){
 .book_table {
   width: 95%;
+}
+.conversation .book_details {
+    font-size: 8px;
+}
+.conversation .book_details:hover {
+    color: #333;
 }
 .topbar {
     position:absolute;
@@ -284,9 +330,11 @@ Make vertical login box appear:
         New here?
 
         Username
+        ••••••••
         First
         Last
-        ••••••••
+        Email
+        Phone
 
 */
 .mainpage_small_login, .mainpage_small_login input{

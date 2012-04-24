@@ -218,6 +218,7 @@ get '/book/:id' do
     session[:crumb_path] = env['PATH_INFO']
     redirect '/login' 
   elsif Book.get(params[:id])
+    @users = User.all(:order => :username)
     @book = Book.get(params[:id])
     @title = Book.get(params[:id]).name+" - Book Exchange"
     erb :edit
@@ -227,15 +228,26 @@ get '/book/:id' do
 end
 
  # edit task
+get '/inbox_listings' do
+  if !env['warden'].user
+  else
+    user = env['warden'].user
+    @messages = Message.all(:conditions =>["sender = ? OR recipient = ?", user.id, 
+user.id], :order => :sent_at)
+    erb :inbox_listings, :layout=> false
+  end
+end
+
 get '/inbox' do
   if !env['warden'].user
     session[:crumb_path] = env['PATH_INFO']
     redirect '/login'
   else
     user = env['warden'].user
+    @users = User.all(:order => :username)
     @messages = Message.all(:conditions =>["sender = ? OR recipient = ?", user.id, 
 user.id], :order => :sent_at)
-    erb :inbox_listings
+    erb :inbox
   end
 end
 
@@ -244,6 +256,7 @@ get '/user/:id' do
     session[:crumb_path] = env['PATH_INFO']
     redirect '/login' 
   elsif User.get(params[:id])
+    @users = User.all(:order => :username)
     @user = User.get(params[:id])
     @title = User.get(params[:id]).username+"'s profile - Book Exchange"
     @books = Book.all(:owner => params[:id], :order=> :created_at)
@@ -421,6 +434,7 @@ end
 # delete confirmation
 get '/book/:id/delete' do
   redirect '/login' unless env['warden'].user
+  @users = User.all(:order => :username)
   @book = Book.get(params[:id])
   @title = "Remove "+Book.get(params[:id]).name+" - Book Exchange"
   erb :delete

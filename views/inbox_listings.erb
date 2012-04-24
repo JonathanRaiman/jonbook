@@ -1,8 +1,16 @@
-<ul id="inbox_listings">
+<table id="inbox_listings" class="conversation">
 <% unless @messages.empty? %>
 	<% @messages.each do |m| %>
-		<li><%= m.body %><%= " sent at "+relative_time(Time.parse(m.sent_at.to_s)) %>
-		</li>
+		<tr>
+			<td colspan="3" class="book_details"><%= relative_time(Time.parse(m.sent_at.to_s)) %></td>
+		</tr>
+		<tr>
+			<td class="<%= User.get(m.sender) != env['warden'].user ? "conversation_speaker" : "conversation_blank" %>"><% if User.get(m.sender) != env['warden'].user %>
+				<a href="/user/<%= User.get(m.sender).id %>"><%= User.get(m.sender).username %></a><% else %><% end %></td>
+			<td class="<%= User.get(m.sender) == env['warden'].user ? "conversation_domestic" : "conversation_third_party" %>"><%= m.body %></td>
+			<td class="<%= User.get(m.sender) == env['warden'].user ? "conversation_user" : "conversation_blank" %>"><% if User.get(m.sender) == env['warden'].user %>
+				<a href="/user/<%= User.get(m.sender).id %>"><%= User.get(m.sender).username %></a><% else %><% end %></td></td>
+		</tr>
 	<%end%>
 <%end%>
-</ul>
+</table>

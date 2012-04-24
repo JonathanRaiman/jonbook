@@ -1,4 +1,115 @@
+<script>
+var fancybox_options = {          
+                        'overlayShow'   : true,
+                        'transitionIn'  : 'elastic',
+                        'transitionOut' : 'elastic',
+                        'overlayColor'  : '#000',
+                        'overlayOpacity': 0.3,
+                        'autoScale'     : true,
+                        'scrolling'     : 'no'
+                        };
+var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
+$("#messenger").live('submit', function () {
+	$.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
+  	$('#body').val('');$('#recipient').val('');
+  		updatelistings();
+});
+function updatelistings () {
+      $.get('/inbox_listings', function (data){
+      		$("#inbox_listings").html(data);
+      });
+};
+
+setInterval ("updatelistings()", 1200);
+
+$("a").live('click', function (e) {
+      e.preventDefault();
+      if ($(this).attr("href")){
+            var input = $(this).attr('href').split('/');
+            if (input[1] == "book" && input[3]==null){
+                  $.post('/book', {id:input[2]}, function (data){
+                        $.fancybox(
+                              data,
+                              fancybox_options);
+                  });
+            }
+            else if (input[1] == "book" && input[3]=="delete") {
+                  $.post('/book', {id:input[2], delete : "true"}, function (data){
+                        $.fancybox(
+                              data,
+                              fancybox_options);
+                        });
+                  }
+            else if (input[1] == "user") {
+                  $.post('/user', {id:input[2]}, function (data){
+                        $.fancybox(
+                              data,
+                              fancybox_options);
+                        });
+                  }
+            else {
+                  location.href=$(this).attr('href');
+            }
+      }
+      
+      
+});
+function removeitem (address) {
+      var input = address.split('/');
+      if (input[1] == "book" && input[3]==null){
+            $.post('/book', {id:input[2]}, function (data){
+            $.fancybox(
+            data,
+            {
+                  
+                'overlayShow'   : true,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'overlayColor'  : '#000',
+                'overlayOpacity': 0.3,
+                'autoScale'     : true,
+                'scrolling'     : 'no'
+            });
+            });
+      }
+      else if (input[1] == "book" && input[3]=="delete") {
+            $.post('/book', {id:input[2], delete : "true"}, function (data){
+            $.fancybox(
+            data,
+            {
+                  
+                'overlayShow'   : true,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'overlayColor'  : '#000',
+                'overlayOpacity': 0.3,
+                'autoScale'     : true,
+                'scrolling'     : 'no'
+            });
+            });
+      }
+      else if (input[1] == "user" && input[3]=="delete") {
+            $.post('/user', {id:input[2], delete : "true"}, function (data){
+            $.fancybox(
+            data,
+            {
+                  
+                'overlayShow'   : true,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'overlayColor'  : '#000',
+                'overlayOpacity': 0.3,
+                'autoScale'     : true,
+                'scrolling'     : 'no'
+            });
+            });
+      }
+      else {
+            location.href=$(this).attr('href');
+      }
+};
+</script>
 <div class="mainpage_content">
-	<ul id="inbox_listings">
-	</ul>
+	<table id="inbox_listings" class="conversation">
+	</table>
 </div>

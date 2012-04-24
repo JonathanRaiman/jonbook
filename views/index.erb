@@ -28,9 +28,6 @@ $(function () {
             });
       });
 });
-function perfectsize () {
-      return Math.min($(window).width()-30,$(window).width()*0.95);
-}
 var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
 $("#messenger").live('submit', function () {
   $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
@@ -244,18 +241,6 @@ $("#item_edition").live('submit', function (e){
 <%else%>
       <p id="book_listings">No books to trade.</p>
 <%end%><!-- /Book Listings -->
-
-<h3>Conversations:</h3>
-
-<% unless @messages.empty? %>
-      <ul>
-<% @messages.each do |m| %>
-            <li>
-                  <strong><%= User.get(m.sender).username %></strong> : <%= m.body %>
-            </li>
-<% end %>
-      </ul>
-<% end %>
 
 
 
