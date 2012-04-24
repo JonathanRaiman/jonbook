@@ -106,9 +106,9 @@ i{
 
 .topbar input[type="submit"]:active,
 .topbar input[type="button"]:active{
-    -moz-box-shadow:  inset 0 0 5px 1px #1A356E;
-    -webkit-box-shadow:  inset 0 0 5px 1px #1A356E;
-    box-shadow:  inset 0 0 5px 1px #1A356E;
+    -moz-box-shadow:  inset 0 0 5px 1px rgba(0,0,0,0.5);
+    -webkit-box-shadow:  inset 0 0 5px 1px rgba(0,0,0,0.5);
+    box-shadow:  inset 0 0 5px 1px rgba(0,0,0,0.5);
     background: rgb(85, 108, 157);
     -webkit-appearance: none;
 }
@@ -149,9 +149,9 @@ i{
 .bottombar input[type="submit"]:active,
 .bottombar input[type="button"]:active
 {
-    -moz-box-shadow:  inset 0 0 5px 1px #999;
-    -webkit-box-shadow:  inset 0 0 5px 1px #999;
-    box-shadow:  inset 0 0 5px 1px #999;
+    -moz-box-shadow:  inset 0 0 5px 1px rgba(0,0,0,0.5);
+    -webkit-box-shadow:  inset 0 0 5px 1px rgba(0,0,0,0.5);
+    box-shadow:  inset 0 0 5px 1px rgba(0,0,0,0.5);
     background: rgb(248, 248, 248);
 }
 
@@ -231,6 +231,12 @@ background: rgb(243, 246, 250);
 .mainpage_small_login{
     display: none;
 }
+#fancybox-content .mainpage_content{
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 0px;
+}
+
 @media handheld, only screen and (max-width: 650px){
 .book_table {
   width: 95%;

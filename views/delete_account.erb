@@ -1,0 +1,23 @@
+<div class="mainpage_content">
+	<table class="book_table">
+		<tr>
+			<td colspan="2" class="table_header" style="color: #333">Are you sure you want to <font style="color:rgb(230,0,0); font-weight: bold">delete</font> your account?
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="book_details" style="text-align: center">Note: this will remove all the listings for the books you have posted.
+			</td>
+		</tr>
+		<tr>
+		<form action="/user/<%= @user.id %>" method="post">
+		<input type="hidden" name="_method" value="delete" />
+			<td style="text-align: right">
+				<input type="submit" value="Delete my profile">
+			</td>
+			<td style="text-align: left">
+				or <a <%= @ajax ?  '' : 'href="/"' %> style="font-weight:bold; cursor: pointer" onclick="$.fancybox.close()">Cancel</a>
+			</td>
+		</form>
+		</tr>
+	</table>
+</div>

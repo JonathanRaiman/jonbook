@@ -1,4 +1,22 @@
 <% if !env['warden'].user %>
+<script>
+	$("#submit_signup").css({opacity: 0.5});
+	$(document).live('keyup', function (){
+		if ($("#password").val() && $("#username").val() && $("#email").val()){
+			$("#submit_signup").css({opacity: 1});
+		}
+		else {
+			$("#submit_signup").css({opacity: 0.5});
+		}
+	});
+	$("#form_signup").live('submit', function (e){
+		if ($("#password").val() && $("#username").val() && $("#email").val()){
+		}
+		else {
+			return false;
+		}
+	});
+</script>
 <div class="mainpage_content">
 	<span class="mainpage_small_login">
 		<form action='/login' method='post' >
@@ -9,32 +27,64 @@
 	</span>
 	<table class="book_table">
 		<tr>
-			<td class="table_header" style="line-height: 2.5">
+			<td colspan="2" class="table_header" style="line-height: 2.5">
 				New here?
 			</td>
 		</tr>
 		<tr>
-			<td class="book_details" style="text-align: center">
+			<td colspan="2" class="book_details" style="text-align: center">
 				Sign up:
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align: center">
-			<form action='/user/create' method='post' class="mainpage_signup">
-  				<input type="text" name="username" placeholder="Username"/>
-  			</br>
-  				<input type="password" name="password" placeholder="Password"/>
-  			</br>
-  			</br>
-  				<input type="text" name="firstname" placeholder="First name"/>
-  			</br>
-  				<input type="text" name="lastname" placeholder="Last name"/>
-  			</br>
-  				<input type="submit" value="Sign up"/>
-  			</form>
-  			</td>
-  		</tr>
+		<form action='/user/create' method='post' class="mainpage_signup" id="form_signup">
+			<td style="text-align: right; width: 50%" class="book_details">Username: 
+			</td>
+			<td>
+				<input type="text" name="username" id="username" placeholder="Username"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right; width: 50%" class="book_details">Password: 
+			</td>
+			<td>
+				<input type="password" name="password" id="password" placeholder="Password"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right; width: 50%" class="book_details">First Name (optional): 
+			</td>
+			<td>
+				<input type="text" name="firstname" placeholder="First name"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right; width: 50%" class="book_details">Last name (optional): 
+			</td>
+			<td>
+				<input type="text" placeholder="Last name" name="lastname"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right; width: 50%" class="book_details">Email: 
+			</td>
+			<td>
+				<input type="text" placeholder="•••••@domain.com" id="email" name="email"/>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: right; width: 50%" class="book_details">Phone number (optional): 
+			</td>
+			<td>
+				<input type="text" placeholder="••• ••• ••••" name="phone"/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center">
+				<input type="submit" value="Sign up" id="submit_signup"/>
+			</td>
+		</tr>
+  		</form>
   	</table>
 </div>
 <% end %>
-

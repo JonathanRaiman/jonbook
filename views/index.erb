@@ -1,13 +1,12 @@
 <script>
-var fancybox_options = {
-                                    
-                                  'overlayShow'   : true,
-                                  'transitionIn'  : 'elastic',
-                                  'transitionOut' : 'elastic',
-                                  'overlayColor'  : '#000',
-                                  'overlayOpacity': 0.3,
-                                  'autoScale'     : true,
-                                  'scrolling'     : 'no'
+var fancybox_options = {          
+                        'overlayShow'   : true,
+                        'transitionIn'  : 'elastic',
+                        'transitionOut' : 'elastic',
+                        'overlayColor'  : '#000',
+                        'overlayOpacity': 0.3,
+                        'autoScale'     : true,
+                        'scrolling'     : 'no'
                         };
 $(function () {
       $("#new_item_form form").attr("action", "");
@@ -79,9 +78,6 @@ $("a").live('click', function (e) {
                               fancybox_options);
                         });
                   }
-            
-
-
             else {
                   location.href=$(this).attr('href');
             }
@@ -109,6 +105,22 @@ function removeitem (address) {
       }
       else if (input[1] == "book" && input[3]=="delete") {
             $.post('/book', {id:input[2], delete : "true"}, function (data){
+            $.fancybox(
+            data,
+            {
+                  
+                'overlayShow'   : true,
+                'transitionIn'  : 'elastic',
+                'transitionOut' : 'elastic',
+                'overlayColor'  : '#000',
+                'overlayOpacity': 0.3,
+                'autoScale'     : true,
+                'scrolling'     : 'no'
+            });
+            });
+      }
+      else if (input[1] == "user" && input[3]=="delete") {
+            $.post('/user', {id:input[2], delete : "true"}, function (data){
             $.fancybox(
             data,
             {
