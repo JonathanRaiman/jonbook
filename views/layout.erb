@@ -41,7 +41,7 @@
 					<td>
 	<% if url.split('/')[3] != "login" %> or <a href="/login">Sign up</a></td><% end %>
 <% else %>
-					<td style="text-align: right" class="mainpage_logout"><font class="signin_comment">Signed up as </font><font style="color:white"><%= env['warden'].user.username %></font>, 
+					<td style="text-align: right" class="mainpage_logout"><font class="signin_comment">Signed up as </font><a href="/user/<%=env['warden'].user.id%>" style="color:white"><%= env['warden'].user.username %></a>, 
 						<input type="button" onClick="location.href='/logout'" value="Logout?" style="display: inline-block; vertical-align: middle; margin-bottom: 7px"/>
 					</td>
 <% end %>

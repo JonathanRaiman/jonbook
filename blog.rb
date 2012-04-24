@@ -39,16 +39,19 @@ end
 class User
   include DataMapper::Resource
 
-  property :id,       Serial
-  property :username, String, :unique => true
-  property :password, String
+  property :id,         Serial
+  property :username,   String, :unique => true
+  property :password,   String
+  property :created_at, DateTime
+  property :firstname,  String
+  property :lastname,   String
 
   # Public class method than returns a user object if the caller supplies the correct name and password
   #
   def self.authenticate(username, password)
     user = first(:username => username)
     if user
-      if user.password != OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'), "secretsalt", password)
+      if user.password != OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", password)
         user = nil
       end
     end
@@ -191,7 +194,7 @@ post '/message/create' do
 end
 
 post '/user/create' do
-  user = User.create(:username => params[:username], :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('md5'), "secretsalt", params[:password]))
+  user = User.create(:username => params[:username], :firstname => params[:firstname], :lastname => params[:lastname], :created_at => Time.now, :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password]))
   if user.save
     status 201
     env['warden'].authenticate!
@@ -215,6 +218,97 @@ get '/book/:id' do
     redirect '/'
   end
 end
+
+get '/user/:id' do
+  if !env['warden'].user
+    session[:crumb_path] = env['PATH_INFO']
+    redirect '/login' 
+  elsif User.get(params[:id])
+    @user = User.get(params[:id])
+    @title = User.get(params[:id]).username+"'s profile - Book Exchange"
+    @books = Book.all(:owner => params[:id], :order=> :created_at)
+    erb :profile
+  else
+    redirect '/'
+  end
+end
+
+post '/user' do
+  if !env['warden'].user
+  elsif User.get(params[:id])
+    @user = User.get(params[:id])
+    @title = User.get(params[:id]).username+"'s profile - Book Exchange"
+    @books = Book.all(:owner => params[:id], :order=> [:created_at.desc])
+    erb :profile, :layout => false
+  end
+end
+
+post '/user/update' do
+  if env['warden'].user
+    if User.get(params[:id]) and !params[:password]
+      if User.get(params[:id])==env['warden'].user
+        user= User.get(params[:id])
+        user.username = params[:username]
+        user.firstname = params[:firstname]
+        user.lastname = params[:lastname]
+          if user.save
+            
+            status 201
+            redirect '/'
+          else
+            status 412
+            redirect '/'
+          end
+      end
+    elsif User.get(params[:id]) and params[:password] and !params[:newpassword]
+      if User.get(params[:id])==env['warden'].user
+        user= User.get(params[:id])
+        user.username = params[:username]
+        user.firstname = params[:firstname]
+        user.lastname = params[:lastname]
+          if user.save
+            status 201
+            redirect '/'
+          else
+            status 412
+            redirect '/'
+          end
+      end
+    elsif User.get(params[:id]) and params[:password]==params[:newpassword]
+      if User.get(params[:id])==env['warden'].user
+        user= User.get(params[:id])
+        user.username = params[:username]
+        user.firstname = params[:firstname]
+        user.lastname = params[:lastname]
+          if user.save
+            status 201
+            redirect '/'
+          else
+            status 412
+            redirect '/'
+          end
+      end
+    elsif User.get(params[:id]) and params[:password]!=params[:newpassword] and params[:newpassword]!=""
+      if User.get(params[:id])==env['warden'].user and User.get(params[:id]).password == OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password])
+        user= User.get(params[:id])
+        user.username = params[:username]
+        user.firstname = params[:firstname]
+        user.lastname = params[:lastname]
+        user.password = OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:newpassword])
+        if user.save
+          status 201
+          redirect '/'
+        else
+          status 412
+          redirect '/'
+        end
+      end
+    else
+      redirect '/'
+    end
+  end
+end
+
 
 get '/listings' do
   @books = Book.all(:order => :author)
@@ -281,10 +375,8 @@ post '/book/update' do
   book.sold        = params[:sold]
   if book.save
     status 201
-    puts "book saved"
   else
     status 412
-    puts "cannot save book"
   end
 end
 

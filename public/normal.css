@@ -209,7 +209,22 @@ i{
     border-spacing: 0px;
 }
 
-#book_listings tr:nth-of-type(2n+3) {
+.mainpage_signup input[type="text"]{
+    border: 1px solid #BDC7D8;
+    -webkit-user-select: text;
+    outline: none;
+    color: #777;
+    -webkit-appearance: none;
+}
+.mainpage_signup input[type="password"]{
+    border: 1px solid #BDC7D8;
+    -webkit-user-select: text;
+    outline: none;
+    color: #777;
+    -webkit-appearance: none;
+}
+
+#book_listings tr:nth-of-type(2n+3), #user_book_listings tr:nth-of-type(2n+3){
 background: rgb(243, 246, 250);
 }
 
@@ -263,6 +278,8 @@ Make vertical login box appear:
         New here?
 
         Username
+        First
+        Last
         ••••••••
 
 */
@@ -270,10 +287,10 @@ Make vertical login box appear:
     display: block;
 }
 .mainpage_small_login input{
-    width: 200px;
+    width: 148px;
     position: relative;
     margin-top: 5px;
-    margin-left: -100px;
+    margin-left: -74px;
     left: 50%;
     border: 1px solid #BDC7D8;
     -webkit-user-select: text;
@@ -287,36 +304,8 @@ Make vertical login box appear:
     height: 40px;
     font-size: 15px;
 }
-.mainpage_signup input[type="text"]{
-    position: absolute;
-    margin-left: -100px;
-    left: 50%;
-    right: 115px;
-    top: 230px;
-    width: 200px;
-    border: 1px solid #BDC7D8;
-    -webkit-user-select: text;
-    outline: none;
-    color: #777;
-    -webkit-appearance: none;
-}
-.mainpage_signup input[type="password"]{
-    position: absolute;
-    margin-left: -100px;
-    left: 50%;
-    top: 260px;
-    width: 200px;
-    border: 1px solid #BDC7D8;
-    -webkit-user-select: text;
-    outline: none;
-    color: #777;
-    -webkit-appearance: none;
-}
 .mainpage_signup input[type="submit"]{
-    position: absolute;
-    margin-left: -50px;
-    left: 50%;
-    top: 290px;
+    margin-top: 10px;
     width: 100px;
     height: 40px;
     font-size: 15px;

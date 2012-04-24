@@ -1,4 +1,14 @@
 <script>
+var fancybox_options = {
+                                    
+                                  'overlayShow'   : true,
+                                  'transitionIn'  : 'elastic',
+                                  'transitionOut' : 'elastic',
+                                  'overlayColor'  : '#000',
+                                  'overlayOpacity': 0.3,
+                                  'autoScale'     : true,
+                                  'scrolling'     : 'no'
+                        };
 $(function () {
       $("#new_item_form form").attr("action", "");
       $("#new_item_form form").attr("method", "");
@@ -19,6 +29,9 @@ $(function () {
             });
       });
 });
+function perfectsize () {
+      return Math.min($(window).width()-30,$(window).width()*0.95);
+}
 var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
 $("#messenger").live('submit', function () {
   $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
@@ -41,7 +54,7 @@ function updatelistings () {
 
 // setInterval ("updatelistings()", 5000);
 
-$("td a").live('click', function (e) {
+$("a").live('click', function (e) {
       e.preventDefault();
       if ($(this).attr("href")){
             var input = $(this).attr('href').split('/');
@@ -49,34 +62,26 @@ $("td a").live('click', function (e) {
                   $.post('/book', {id:input[2]}, function (data){
                         $.fancybox(
                               data,
-                              {
-                                    
-                                  'overlayShow'   : true,
-                                  'transitionIn'  : 'elastic',
-                                  'transitionOut' : 'elastic',
-                                  'overlayColor'  : '#000',
-                                  'overlayOpacity': 0.3,
-                                  'autoScale'     : true,
-                                  'scrolling'     : 'no'
-                        });
+                              fancybox_options);
                   });
             }
             else if (input[1] == "book" && input[3]=="delete") {
                   $.post('/book', {id:input[2], delete : "true"}, function (data){
                         $.fancybox(
                               data,
-                              {
-                                    
-                                  'overlayShow'   : true,
-                                  'transitionIn'  : 'elastic',
-                                  'transitionOut' : 'elastic',
-                                  'overlayColor'  : '#000',
-                                  'overlayOpacity': 0.3,
-                                  'autoScale'     : true,
-                                  'scrolling'     : 'no'
-                              });
+                              fancybox_options);
                         });
                   }
+            else if (input[1] == "user") {
+                  $.post('/user', {id:input[2]}, function (data){
+                        $.fancybox(
+                              data,
+                              fancybox_options);
+                        });
+                  }
+            
+
+
             else {
                   location.href=$(this).attr('href');
             }
@@ -164,8 +169,7 @@ $("#item_edition").live('submit', function (e){
                   </tr>
                         <td colspan="2">
                               <textarea type="text" name="description" id="description" placeholder="description & condition" style="width: 95%; resize: vertical; max-height: 120px
-                              ">
-                              </textarea>
+                              "></textarea>
                         </td>
                   </tr>
                   <tr>

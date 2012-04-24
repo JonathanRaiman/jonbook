@@ -1,0 +1,108 @@
+<div class="mainpage_content">
+<table class="book_table">
+	<tr>
+		<td colspan="2" class="table_header"><%= @user == env['warden'].user ? "Your profile" : @user.username+"'s profile" %></td>
+	</tr>
+	<tr>
+		<td class="book_details"><%= @user == env['warden'].user ? "You joined " : "Joined " %><%= relative_time(Time.parse(@user.created_at.to_s)) %>
+		</td>
+	</tr>
+</table>
+<% unless @books.empty? %>
+      <table class="book_table" id="user_book_listings">
+            <tr>
+                  <td colspan="5" class="table_header"><%= @user == env['warden'].user ? "Your books" : @user.username+"'s books" %>
+                  </td>
+            </tr>
+            <tr>
+                  <td>
+                  </td>
+
+                  <td class="book_details">Title
+                  </td>
+
+                  <td class="book_details">Author
+                  </td>
+
+                  <td class="book_details" style="text-align: right">Price
+                  </td>
+
+                  <td>
+                  </td>
+            </tr>
+
+<% @books.each do |book| %>
+            <tr>
+                  <td class="book_details_sold"><%= "(Sold)" if book.sold %>
+                  </td>
+
+                  <td>
+                        <a href="/book/<%=book.id%>"><i><%=book.name%></i></a>
+                  </td>
+
+                  <td>
+                        <a href="/book/<%=book.id%>">by <%= book.author%></a>
+                  </td>
+
+                  <td style="color: #444; text-align: right"><%= sprintf("%.2f", book.price) %>€
+                  </td>
+
+                  <td class="book_details"><%if book.owner == env['warden'].user.id %>
+                        <a href="/book/<%= book.id %>/delete">Remove</a><%else%><%= relative_time(Time.parse(book.created_at.to_s)) %><%end%>
+                  </td>
+
+            </tr>
+<% end %>
+      </table>
+<%else%>
+      <p id="book_listings"><%= @user == env['warden'].user ? "Your have no listings." : @user.username+" has no listings." %></p>
+<%end%><!-- /Book Listings -->
+<% if @user == env['warden'].user %>
+<table class="book_table" style="margin-top: 25px">
+	<tr>
+		<td class="book_details" style="text-align:center">Edit your profile:
+		</td>
+	</tr>
+	<tr>
+		<form action="/user/update" method="post">
+		<input type="hidden" name="id" value="<%= env['warden'].user.id %>"/>
+		<td style="text-align: center">
+			<input type="text" name="username" value="<%= env['warden'].user.username %>"/>
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: center">
+			<input type="text" name="firstname" placeholder="First" value="<%= env['warden'].user.firstname %>" />
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: center">
+					<input type="text" placeholder="Last" name="lastname" value="<%= env['warden'].user.lastname %>" />
+		</td>
+	</tr>
+	<tr>
+		<td></br></td>
+	</tr>
+	<tr>
+		<td class="book_details" style="text-align: center">Changing passwords?</br>Write your old one and the new one below.
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: center">
+			<input type="password" name="password" placeholder="password" />
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: center">
+			<input type="password" name="newpassword" placeholder="new password" />
+		</td>
+	</tr>
+	<tr>
+		<td style="text-align: center">
+			<input type="submit" value="Update"/>
+		</td>
+		</form>
+	</tr>
+<% end %>
+</table>
+</div>
