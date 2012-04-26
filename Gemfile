@@ -11,5 +11,5 @@ gem "sinatra_more"
 gem "sinatra-static-assets"
 gem 'linguistics'
 gem 'sanitize'
-gem 'carrierwave', :git => 'git://github.com/jnicklas/carrierwave.git'
+gem 'carrierwave'
 gem 'carrierwave-datamapper'
