@@ -8,7 +8,7 @@ var fancybox_options = {
                         'autoScale'     : true,
                         'scrolling'     : 'no'
                         };
-var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
+var Users = [<% @users.each do |user|%>"<%= user.firstname+" "+user.lastname %>",<% end%>];
 $("#messenger").live('submit', function () {
 	$.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
   	$('#body').val('');$('#recipient').val('');
@@ -109,7 +109,29 @@ function removeitem (address) {
       }
 };
 </script>
+<div class="conversation_chooser">
+    <span class="speaker new">+ New</span>
+    <span class="speaker">Joe Mayer</span>
+    <span class="speaker selected">Bill Swanson</span>
+    <span class="speaker">Joe Mayer (2)</span>
+    <span class="speaker">Joe Mayer</span>
+    <span class="speaker">Joe Mayer</span>
+    <span class="speaker">Joe Mayer</span>
+</div>
 <div class="mainpage_content">
 	<table id="inbox_listings" class="conversation">
 	</table>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,17 +1,15 @@
 <div class="mainpage_content">
 <table class="book_table">
 	<tr>
-		<td colspan="2" class="table_header"><%= @user == env['warden'].user ? "Your profile" : @user.username+"'s profile" %></td>
+		<td colspan="2" class="table_header"><%= @user == env['warden'].user ? "Your profile" : @user.firstname+" "+@user.lastname+"'s profile" %></td>
 	</tr>
 <% if @user != env['warden'].user %>
-<% if @user.firstname or @user.lastname %>
 	<tr>
 		<td class="book_details" style="text-align:right; width: 50%">Name:
 		</td>
-		<td><%= @user.firstname ? @user.firstname : ""%> <%= @user.lastname ? @user.lastname : "" %>
+		<td><%= @user.firstname + " " + @user.lastname %>
 		</td>
 	</tr>
-<% end %>
 <% if @user.email and @user.email_shared %>
 	<tr>
 		<td class="book_details" style="text-align:right; width: 50%">Email:
@@ -38,7 +36,7 @@
 <% unless @books.empty? %>
       <table class="book_table" id="user_book_listings">
             <tr>
-                  <td colspan="5" class="table_header"><%= @user == env['warden'].user ? "Your books" : @user.username+"'s books" %>
+                  <td colspan="5" class="table_header"><%= @user == env['warden'].user ? "Your books" : @user.firstname+" "+@user.lastname+"'s books" %>
                   </td>
             </tr>
             <tr>
@@ -82,7 +80,7 @@
 <% end %>
       </table>
 <%else%>
-      <p id="book_listings" class="table_header"><%= @user == env['warden'].user ? "Your have no listings." : @user.username+" has no listings." %></p>
+      <p id="book_listings" class="table_header"><%= @user == env['warden'].user ? "Your have no listings." : @user.firstname+" "+@user.lastname+" has no listings." %></p>
 <%end%><!-- /Book Listings -->
 <% if @user == env['warden'].user %>
 <table class="book_table" style="margin-top: 25px">
@@ -93,13 +91,6 @@
 	<tr>
 		<form action="/user/update" method="post">
 		<input type="hidden" name="id" value="<%= env['warden'].user.id %>"/>
-		<td style="text-align: right; width: 50%" class="book_details">Username: 
-		</td>
-		<td>
-			<input type="text" name="username" value="<%= env['warden'].user.username %>"/>
-		</td>
-	</tr>
-	<tr>
 		<td style="text-align: right; width: 50%" class="book_details">First name: 
 		</td>
 		<td>
@@ -114,10 +105,10 @@
 		</td>
 	</tr>
 	<tr>
-		<td style="text-align: right; width: 50%" class="book_details">Email:
+		<td style="text-align: right; width: 50%" class="book_details">Email: 
 		</td>
 		<td>
-			<input type="text" placeholder="Email" name="email" value="<%= env['warden'].user.email %>" />
+			<input type="email" name="email" value="<%= env['warden'].user.email %>"/>
 		</td>
 	</tr>
 	<tr>

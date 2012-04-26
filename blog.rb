@@ -10,10 +10,17 @@ require 'date'
 require 'linguistics'
 require 'sanitize'
 require 'resolv'
+require 'carrierwave'
+require 'carrierwave/datamapper'
+
 
 Linguistics::use( :en )
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
+
+class MyUploader < CarrierWave::Uploader::Base    #via a Carrierwave tutorial
+  storage :file
+end
 
 class Book
   include DataMapper::Resource
@@ -42,7 +49,6 @@ class User
   include DataMapper::Resource
 
   property :id,               Serial
-  property :username,         String, :unique => true, :length => 1..200
   property :password,         String, :required => true
   property :created_at,       DateTime
   property :firstname,        String
@@ -54,8 +60,8 @@ class User
 
   # Public class method than returns a user object if the caller supplies the correct name and password
   #
-  def self.authenticate(username, password)
-    user = first(:username => username)
+  def self.authenticate(email, password)
+    user = first(:email => email)
     if user
       if user.password != OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", password)
         user = nil
@@ -80,6 +86,14 @@ class User
 
 
 end
+
+  class Image
+    include DataMapper::Resource
+    property :id, Serial
+    property :created_at, DateTime
+    property :image, String, :auto_validation => false  
+    mount_uploader :image, MyUploader                   
+  end
 
 DataMapper.finalize
 
@@ -110,13 +124,13 @@ Warden::Strategies.add(:password) do
   def valid?
     puts '[INFO] password strategy valid?'
     
-    params['username'] || params['password']
+    params['email'] || params['password']
   end
   
   def authenticate!
     puts '[INFO] password strategy authenticate'
 
-    u = User.authenticate(params['username'], params['password'])
+    u = User.authenticate(params['email'], params['password'])
     u.nil? ? fail!('Could not login in') : success!(u)
   end
 end
@@ -158,7 +172,7 @@ end
 get '/' do
       redirect '/login' unless env['warden'].user
       @books = Book.all(:order => :author)
-      @users = User.all(:order => :username)
+      @users = User.all(:order => :lastname)
       @messages = Message.all(:recipient => env['warden'].user.id) + Message.all(:sender => env['warden'].user.id)
       erb :index
 end
@@ -186,9 +200,9 @@ end
 
 # create new message   
 post '/message/create' do
-  puts User.get(params[:sender]).username+" sends a message saying "+params[:body]+" to "+User.first(:username => params[:recipient]).username
+  puts User.get(params[:sender]).firstname+" "+User.get(params[:sender]).lastname+" sends a message saying "+params[:body]+" to "+User.first(:id => params[:recipient]).firstname+" "+User.first(:id => params[:recipient]).lastname
   # puts JSON.parse(request.body.read.to_s)
-  message = Message.new(:body => Sanitize.clean(params[:body]), :sender => params[:sender], :read => false, :sent_at => Time.now, :recipient => User.first(:username => params[:recipient]).id)
+  message = Message.new(:body => Sanitize.clean(params[:body]), :sender => params[:sender], :read => false, :sent_at => Time.now, :recipient => params[:recipient])
   if message.save
     status 201
   else
@@ -198,7 +212,7 @@ end
 
 post '/user/create' do
   if validate_email_spelling(params[:email]) and validate_email_domain(params[:email])
-    user = User.create(:username => Sanitize.clean(params[:username]), :firstname => Sanitize.clean(params[:firstname]), :lastname => Sanitize.clean(params[:lastname]), :created_at => Time.now, :phone => Sanitize.clean(params[:phone]), :email=>Sanitize.clean(params[:email]), :email_shared => "yes", :phone_shared => "yes", :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password]))
+    user = User.create(:firstname => Sanitize.clean(params[:firstname]), :lastname => Sanitize.clean(params[:lastname]), :created_at => Time.now, :phone => Sanitize.clean(params[:phone]), :email=>Sanitize.clean(params[:email]), :email_shared => "yes", :phone_shared => "yes", :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password]))
     if user.save
       status 201
       env['warden'].authenticate!
@@ -218,7 +232,7 @@ get '/book/:id' do
     session[:crumb_path] = env['PATH_INFO']
     redirect '/login' 
   elsif Book.get(params[:id])
-    @users = User.all(:order => :username)
+    @users = User.all(:order => :lastname)
     @book = Book.get(params[:id])
     @title = Book.get(params[:id]).name+" - Book Exchange"
     erb :edit
@@ -244,7 +258,7 @@ get '/inbox' do
     redirect '/login'
   else
     user = env['warden'].user
-    @users = User.all(:order => :username)
+    @users = User.all(:order => :lastname)
     @messages = Message.all(:conditions =>["sender = ? OR recipient = ?", user.id, 
 user.id], :order => :sent_at)
     erb :inbox
@@ -256,9 +270,9 @@ get '/user/:id' do
     session[:crumb_path] = env['PATH_INFO']
     redirect '/login' 
   elsif User.get(params[:id])
-    @users = User.all(:order => :username)
+    @users = User.all(:order => :lastname)
     @user = User.get(params[:id])
-    @title = User.get(params[:id]).username+"'s profile - Book Exchange"
+    @title = User.get(params[:id]).firstname+" "+User.get(params[:id]).lastname+"'s profile - Book Exchange"
     @books = Book.all(:owner => params[:id], :order=> :created_at)
     erb :profile
   else
@@ -270,7 +284,7 @@ post '/user' do
   if !env['warden'].user
   elsif User.get(params[:id]) and !params[:delete]
     @user  = User.get(params[:id])
-    @title = User.get(params[:id]).username+"'s profile - Book Exchange"
+    @title = User.get(params[:id]).firstname+" "+User.get(params[:id]).lastname+"'s profile - Book Exchange"
     @books = Book.all(:owner => params[:id], :order=> [:created_at.desc])
     erb :profile, :layout => false
   elsif User.get(params[:id]) and params[:delete]
@@ -286,7 +300,6 @@ post '/user/update' do
       if User.get(params[:id]) and !params[:password]
         if User.get(params[:id])==env['warden'].user
           user              = User.get(params[:id])
-          user.username     = Sanitize.clean(params[:username])
           user.firstname    = Sanitize.clean(params[:firstname])
           user.lastname     = Sanitize.clean(params[:lastname])
           user.phone        = Sanitize.clean(params[:phone])
@@ -304,7 +317,6 @@ post '/user/update' do
       elsif User.get(params[:id]) and params[:password] and !params[:newpassword]
         if User.get(params[:id])==env['warden'].user
           user              = User.get(params[:id])
-          user.username     = Sanitize.clean(params[:username])
           user.firstname    = Sanitize.clean(params[:firstname])
           user.lastname     = Sanitize.clean(params[:lastname])
           user.phone        = Sanitize.clean(params[:phone])
@@ -322,7 +334,6 @@ post '/user/update' do
       elsif User.get(params[:id]) and params[:password]==params[:newpassword]
         if User.get(params[:id])==env['warden'].user
           user              = User.get(params[:id])
-          user.username     = Sanitize.clean(params[:username])
           user.firstname    = Sanitize.clean(params[:firstname])
           user.lastname     = Sanitize.clean(params[:lastname])
           user.phone        = Sanitize.clean(params[:phone])
@@ -340,7 +351,6 @@ post '/user/update' do
       elsif User.get(params[:id]) and params[:password]!=params[:newpassword] and params[:newpassword]!=""
         if User.get(params[:id])==env['warden'].user and User.get(params[:id]).password == OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password])
           user              = User.get(params[:id])
-          user.username     = Sanitize.clean(params[:username])
           user.firstname    = Sanitize.clean(params[:firstname])
           user.lastname     = Sanitize.clean(params[:lastname])
           user.phone        = Sanitize.clean(params[:phone])
@@ -384,18 +394,18 @@ post '/book' do
   end
 end
 
-get '/user/search' do
-  if env['warden'].user
-    puts params[:term]
-    @response = User.all(:username => params[:term])
-    # puts @response
-    # @responsejson = []
-    @response.each do |match|
-      puts match.username+" found"
-    end
-    @response.to_json
-  end
-end
+# get '/user/search' do
+#   if env['warden'].user
+#     puts params[:term]
+#     @response = User.all(:username => params[:term])
+#     # puts @response
+#     # @responsejson = []
+#     @response.each do |match|
+#       puts match.username+" found"
+#     end
+#     @response.to_json
+#   end
+# end
 
 # update task
 put '/book/:id' do
@@ -434,7 +444,7 @@ end
 # delete confirmation
 get '/book/:id/delete' do
   redirect '/login' unless env['warden'].user
-  @users = User.all(:order => :username)
+  @users = User.all(:order => :lastname)
   @book = Book.get(params[:id])
   @title = "Remove "+Book.get(params[:id]).name+" - Book Exchange"
   erb :delete
@@ -459,6 +469,23 @@ delete '/user/:id' do
   env['warden'].logout
   redirect '/'  
 end
+
+post '/upload' do
+  n = Image.new
+  n.image = params[:image]      # trying to add image uploading
+  n.created_at = Time.now
+  if n.save 
+    redirect '/'
+  else
+    redirect '/'
+  end
+end
+
+get '/gallery' do
+  @pictures = Image.all(:order => :created_at)
+  erb :gallery, :layout => false
+end
+
 
 DataMapper.auto_upgrade!
 

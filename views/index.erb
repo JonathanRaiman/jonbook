@@ -6,9 +6,13 @@ var fancybox_options = {
                         'overlayColor'  : '#000',
                         'overlayOpacity': 0.3,
                         'autoScale'     : true,
-                        'scrolling'     : 'no'
+                        'scrolling'     : 'no',
+                        'fixed'         : false,
+                        'centerOnScroll': false,
+                        'resizeOnWindowResize' : false
                         };
 $(function () {
+      // $("#recipient").chosen();
       $("#new_item_form form").attr("action", "");
       $("#new_item_form form").attr("method", "");
       $("#new_item_form form").live('submit',
@@ -28,19 +32,10 @@ $(function () {
             });
       });
 });
-var Users = [<% @users.each do |user|%>"<%= user.username %>",<% end%>];
+var Users = [<% @users.each do |user|%>{label: "<%= user.firstname+" "+user.lastname %>", value: <%= user.id%>},<% end%>];
 $("#messenger").live('submit', function () {
   $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
   $('#body').val('');$('#recipient').val('');
-});
-$(function () {
-$("#recipient").autocomplete({
-      source: '/user/search',
-      position: {
-        my: "left bottom",
-        at: "left top"
-    }
-    });
 });
 function updatelistings () {
       $.get('/listings', function (data){
@@ -242,9 +237,12 @@ $("#item_edition").live('submit', function (e){
       <p id="book_listings">No books to trade.</p>
 <%end%><!-- /Book Listings -->
 
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <p><input type="file" name="image" /></p>
+    <input type="submit" value="Upload">
+</form>
 
-
-</div><!-- /Conversations -->
+</div>
 
 
 

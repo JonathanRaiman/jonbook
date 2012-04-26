@@ -2,7 +2,7 @@
 <script>
 	$("#submit_signup").css({opacity: 0.5});
 	$(document).live('keyup', function (){
-		if ($("#password").val() && $("#username").val() && $("#email").val()){
+		if ($("#password").val() && $("#email").val() && $("#firstname").val() && $("#lastname").val()){
 			$("#submit_signup").css({opacity: 1});
 		}
 		else {
@@ -10,7 +10,7 @@
 		}
 	});
 	$("#form_signup").live('submit', function (e){
-		if ($("#password").val() && $("#username").val() && $("#email").val()){
+		if ($("#password").val() && $("#email").val() && $("#firstname").val() && $("#lastname").val()){
 		}
 		else {
 			return false;
@@ -20,7 +20,7 @@
 <div class="mainpage_content">
 	<span class="mainpage_small_login">
 		<form action='/login' method='post' >
-  				<input type="text" name="username" placeholder="Username"/>
+  				<input type="email" name="email" placeholder="Email"/>
   				<input type="password" name="password" placeholder="Password"/>
 				<input type="submit" value="Log in"/>
 		</form>
@@ -38,10 +38,10 @@
 		</tr>
 		<tr>
 		<form action='/user/create' method='post' class="mainpage_signup" id="form_signup">
-			<td style="text-align: right; width: 50%" class="book_details">Username: 
+			<td style="text-align: right; width: 50%" class="book_details">Email: 
 			</td>
 			<td>
-				<input type="text" name="username" id="username" placeholder="Username"/>
+				<input type="text" name="email" id="email" placeholder="•••••@domain.com"/>
 			</td>
 		</tr>
 		<tr>
@@ -52,24 +52,17 @@
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align: right; width: 50%" class="book_details">First Name (optional): 
+			<td style="text-align: right; width: 50%" class="book_details">First Name: 
 			</td>
 			<td>
-				<input type="text" name="firstname" placeholder="First name"/>
+				<input type="text" name="firstname" placeholder="First name" id="firstname"/>
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align: right; width: 50%" class="book_details">Last name (optional): 
+			<td style="text-align: right; width: 50%" class="book_details">Last name: 
 			</td>
 			<td>
-				<input type="text" placeholder="Last name" name="lastname"/>
-			</td>
-		</tr>
-		<tr>
-			<td style="text-align: right; width: 50%" class="book_details">Email: 
-			</td>
-			<td>
-				<input type="text" placeholder="•••••@domain.com" id="email" name="email"/>
+				<input type="text" placeholder="Last name" name="lastname" id="lastname"/>
 			</td>
 		</tr>
 		<tr>
