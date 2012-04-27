@@ -5,11 +5,6 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     addressable (2.2.7)
-    carrierwave (0.5.8)
-      activesupport (~> 3.0)
-    carrierwave-datamapper (0.2.0)
-      carrierwave (~> 0.5.6)
-      dm-core (~> 1.0)
     data_objects (0.10.8)
       addressable (~> 2.1)
     datamapper (0.3.2)
@@ -75,8 +70,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  carrierwave
-  carrierwave-datamapper
   datamapper
   dm-postgres-adapter
   dm-sqlite-adapter
