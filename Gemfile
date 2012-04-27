@@ -11,5 +11,5 @@ gem "sinatra_more"
 gem "sinatra-static-assets"
 gem 'linguistics'
 gem 'sanitize'
-gem 'carrierwave'
+gem 'carrierwave', '~> 0.5.8'
 gem 'carrierwave-datamapper'
