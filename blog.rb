@@ -9,18 +9,19 @@ require 'sinatra/static_assets'
 require 'date'
 require 'linguistics'
 require 'sanitize'
+require "FileUtils"
 require 'resolv'
-require 'carrierwave'
-require 'carrierwave/datamapper'
+# require 'carrierwave'
+# require 'carrierwave/datamapper'
 
 
 Linguistics::use( :en )
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
-class MyUploader < CarrierWave::Uploader::Base    #via a Carrierwave tutorial
-  storage :file
-end
+# class MyUploader < CarrierWave::Uploader::Base    #via a Carrierwave tutorial
+#   storage :file
+# end
 
 class Book
   include DataMapper::Resource
@@ -89,10 +90,10 @@ end
 
   class Image
     include DataMapper::Resource
-    property :id, Serial
+    property :id,         Serial
     property :created_at, DateTime
-    property :image, String, :auto_validation => false  
-    mount_uploader :image, MyUploader                   
+    property :filename,   String, :required => true
+    property :url,        String, :required => true      
   end
 
 DataMapper.finalize
@@ -470,10 +471,25 @@ delete '/user/:id' do
   redirect '/'  
 end
 
+# post '/upload' do
+#   n = Image.new
+#   n.image = params[:image]      # trying to add image uploading
+#   n.created_at = Time.now
+#   if n.save 
+#     redirect '/'
+#   else
+#     redirect '/'
+#   end
+# end
+
 post '/upload' do
+  puts params[:image]
+  puts params[:image][:tempfile].path
   n = Image.new
-  n.image = params[:image]      # trying to add image uploading
+  n.filename = params[:image][:filename]
   n.created_at = Time.now
+  FileUtils.copy(params[:image][:tempfile].path, "./public/uploads/"+params[:image][:filename])
+  n.url = "/uploads/#{params[:image][:filename]}"
   if n.save 
     redirect '/'
   else

@@ -75,7 +75,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  carrierwave (~> 0.5.8)
+  carrierwave
   carrierwave-datamapper
   datamapper
   dm-postgres-adapter
