@@ -11,17 +11,11 @@ require 'linguistics'
 require 'sanitize'
 require "FileUtils"
 require 'resolv'
-# require 'carrierwave'
-# require 'carrierwave/datamapper'
 
 
 Linguistics::use( :en )
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
-
-# class MyUploader < CarrierWave::Uploader::Base    #via a Carrierwave tutorial
-#   storage :file
-# end
 
 class Book
   include DataMapper::Resource
@@ -470,17 +464,6 @@ delete '/user/:id' do
   env['warden'].logout
   redirect '/'  
 end
-
-# post '/upload' do
-#   n = Image.new
-#   n.image = params[:image]      # trying to add image uploading
-#   n.created_at = Time.now
-#   if n.save 
-#     redirect '/'
-#   else
-#     redirect '/'
-#   end
-# end
 
 post '/upload' do
   puts params[:image]
