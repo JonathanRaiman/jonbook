@@ -470,7 +470,7 @@ post '/upload' do
   n = Image.new
   n.filename = params[:image][:filename]
   n.created_at = Time.now
-  FileUtils.copy(params[:image][:tempfile].path, "./tmp/uploads/"+params[:image][:filename])
+  FileUtils.copy(params[:image][:tempfile].path, "./tmp/uploads/")#+params[:image][:filename]
   n.url = "/tmp/uploads/#{params[:image][:filename]}"
   if n.save 
     redirect '/'
