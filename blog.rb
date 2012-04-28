@@ -89,8 +89,8 @@ end
     include DataMapper::Resource
     property :id,         Serial
     property :created_at, DateTime
-    property :filename,   Text, :required => true
-    property :url,        Text, :required => true      
+    property :filename,   String
+    property :url,        String    
   end
 
 DataMapper.finalize
@@ -496,17 +496,11 @@ post '/upload' do
     AWS::S3::S3Object.store(filename,open(tmpfile),BUCKET,:access => :public_read)     
   end
   @@uploadcount += 1
-  puts "the url is :"
-  puts "http://#{BUCKET}.s3.amazonaws.com/#{filename}"
-  puts "the filename is :"
-  puts filename
-  puts "the reason for not saving were bad spelling"
-  img = Image.create(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
-  if img.save 
-    redirect '/gallery'
-  else
-    redirect '/'
-  end
+  img = Image.new()
+  img.update(:filename => filename)
+  img.update(:created_at => Time.now)
+  img.update(:url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
+  redirect '/gallery'
 end
 
 get '/gallery' do
