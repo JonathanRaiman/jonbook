@@ -482,11 +482,11 @@ end
 
 post '/upload' do
   puts "s3 key"
-  puts ENV[:s3_key]
+  puts ENV[':s3_key']
   puts "s3 secret"
-  puts ENV[:s3_secret]
+  puts ENV[':s3_secret']
   puts "s3 bucket"
-  puts ENV[:bucket]
+  puts ENV[':bucket']
  #  unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
  #    redirect '/'
  #  end
