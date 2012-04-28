@@ -11,6 +11,7 @@ require 'sanitize'
 require 'fileutils'
 #require 'FileUtils'
 require 'resolv'
+require 'aws/s3'
 
 Linguistics::use( :en )
 
@@ -464,19 +465,32 @@ delete '/user/:id' do
   redirect '/'  
 end
 
+# post '/upload' do
+#   puts params[:image]
+#   puts params[:image][:tempfile].path
+#   n = Image.new
+#   n.filename = params[:image][:filename]
+#   n.created_at = Time.now
+#   FileUtils.copy(params[:image][:tempfile].path, "./public/uploads/"+params[:image][:filename])
+#   n.url = "/uploads/#{params[:image][:filename]}"
+#   if n.save 
+#     redirect '/'
+#   else
+#     redirect '/'
+#   end
+# end
+
 post '/upload' do
-  puts params[:image]
-  puts params[:image][:tempfile].path
-  n = Image.new
-  n.filename = params[:image][:filename]
-  n.created_at = Time.now
-  FileUtils.copy(params[:image][:tempfile].path, "./public/uploads/"+params[:image][:filename])
-  n.url = "/uploads/#{params[:image][:filename]}"
-  if n.save 
-    redirect '/'
-  else
+  unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
     redirect '/'
   end
+  while blk = tmpfile.read(65536)
+    AWS::S3::Base.establish_connection!(
+    :access_key_id     => ENV[:s3_key],
+    :secret_access_key => ENV[:s3_secret])
+    AWS::S3::S3Object.store(name,open(tmpfile),ENV[:bucket],:access => :public_read)     
+  end
+ 'success'
 end
 
 get '/gallery' do
