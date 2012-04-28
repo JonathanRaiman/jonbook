@@ -484,18 +484,16 @@ post '/upload' do
   unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
     redirect '/'
   end
+  n = Image.new
+  n.created_at = Time.now
+  n.filename = params[:image][:filename]
+  n.url = "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
   while blk = tmpfile.read(65536)
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
     :secret_access_key => ENV[':s3_secret'])
     AWS::S3::S3Object.store(name,open(tmpfile),ENV[':bucket'],:access => :public_read)     
   end
-  n = Image.new
-  n.created_at = Time.now
-  n.filename = params[:image][:filename]
-  n.url = "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
-  puts params[:image][:filename]
-  puts "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
   if n.save 
     redirect '/gallery'
   else
