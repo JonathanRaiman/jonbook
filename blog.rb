@@ -89,8 +89,8 @@ end
     include DataMapper::Resource
     property :id,         Serial
     property :created_at, DateTime
-    property :filename,   String, :required => true
-    property :url,        String, :required => true      
+    property :filename,   Text, :required => true
+    property :url,        Text, :required => true      
   end
 
 DataMapper.finalize
@@ -488,7 +488,7 @@ post '/upload' do
     redirect '/'
   end
   extension = File.extname(name)
-  filename = "img_uploads#{@@uploadcount}.#{extension}"
+  filename = "imguploads#{@@uploadcount}#{extension}"
   while blk = tmpfile.read(65536)
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
