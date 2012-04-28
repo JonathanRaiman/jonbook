@@ -490,7 +490,15 @@ post '/upload' do
     :secret_access_key => ENV[':s3_secret'])
     AWS::S3::S3Object.store(name,open(tmpfile),ENV[':bucket'],:access => :public_read)     
   end
- 'success'
+  n = Image.new
+  n.created_at = Time.now
+  n.filename = params[:image][:filename]
+  n.url = "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
+  if n.save 
+    redirect '/'
+  else
+    redirect '/'
+  end
 end
 
 get '/gallery' do
