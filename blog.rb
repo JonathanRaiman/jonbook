@@ -17,9 +17,6 @@ Linguistics::use( :en )
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
-DataMapper::Property::String.length(255) 
-DataMapper::Property::Text.length(65535) 
-
 BUCKET = ENV[':bucket']
 @@uploadcount = 100
 
@@ -92,8 +89,8 @@ end
     include DataMapper::Resource
     property :id,         Serial
     property :created_at, DateTime
-    property :filename,   String, :required => true
-    property :url,        String, :required => true
+    property :filename,   String, :required => true, :length => 1..250
+    property :url,        String, :required => true, :length => 1..250
   end
 
 DataMapper.finalize
