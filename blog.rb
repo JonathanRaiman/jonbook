@@ -465,20 +465,20 @@ delete '/user/:id' do
   redirect '/'  
 end
 
-post '/upload' do
-  puts params[:image]
-  puts params[:image][:tempfile].path
-  n = Image.new
-  n.filename = params[:image][:filename]
-  n.created_at = Time.now
-  FileUtils.copy(params[:image][:tempfile].path, "./public/uploads/"+params[:image][:filename])
-  n.url = "/uploads/#{params[:image][:filename]}"
-  if n.save 
-    redirect '/'
-  else
-    redirect '/'
-  end
-end
+# post '/upload' do
+#   puts params[:image]
+#   puts params[:image][:tempfile].path
+#   n = Image.new
+#   n.filename = params[:image][:filename]
+#   n.created_at = Time.now
+#   FileUtils.copy(params[:image][:tempfile].path, "./public/uploads/"+params[:image][:filename])
+#   n.url = "/uploads/#{params[:image][:filename]}"
+#   if n.save 
+#     redirect '/'
+#   else
+#     redirect '/'
+#   end
+# end
 
 get '/gallery' do
   @pictures = Image.all(:order => :created_at)
