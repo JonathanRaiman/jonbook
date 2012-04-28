@@ -487,8 +487,10 @@ post '/upload' do
   unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
     redirect '/'
   end
+  img = Image.new(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
+  img.save!
   extension = File.extname(name)
-  filename = "imguploads#{@@uploadcount}#{extension}"
+  filename = "imguploads#{img.id}#{extension}"
   while blk = tmpfile.read(65536)
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
@@ -496,11 +498,6 @@ post '/upload' do
     AWS::S3::S3Object.store(filename,open(tmpfile),BUCKET,:access => :public_read)     
   end
   @@uploadcount += 1
-  img = Image.new()
-  img.save
-  img.update(:filename => filename)
-  img.update(:created_at => Time.now)
-  img.update(:url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
   redirect '/gallery'
 end
 
