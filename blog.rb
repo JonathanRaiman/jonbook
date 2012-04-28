@@ -497,6 +497,7 @@ post '/upload' do
   end
   @@uploadcount += 1
   img = Image.new()
+  img.save
   img.update(:filename => filename)
   img.update(:created_at => Time.now)
   img.update(:url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
