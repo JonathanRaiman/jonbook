@@ -89,8 +89,8 @@ end
     include DataMapper::Resource
     property :id,         Serial
     property :created_at, DateTime
-    property :filename,   String, :required => true
-    property :url,        String, :required => true    
+    property :filename,   String, :required => true, :max => 250
+    property :url,        String, :required => true, :max => 250
   end
 
 DataMapper.finalize
