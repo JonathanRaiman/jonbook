@@ -495,9 +495,9 @@ post '/upload' do
   n.filename = params[:image][:filename]
   n.url = "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
   if n.save 
-    redirect '/'
+    redirect '/gallery'
   else
-    redirect '/'
+    "failure"
   end
 end
 
