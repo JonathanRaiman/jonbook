@@ -481,16 +481,22 @@ end
 # end
 
 post '/upload' do
-  unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
-    redirect '/'
-  end
-  while blk = tmpfile.read(65536)
-    AWS::S3::Base.establish_connection!(
-    :access_key_id     => ENV[:s3_key],
-    :secret_access_key => ENV[:s3_secret])
-    AWS::S3::S3Object.store(name,open(tmpfile),ENV[:bucket],:access => :public_read)     
-  end
- 'success'
+  puts "s3 key"
+  puts ENV[:s3_key]
+  puts "s3 secret"
+  puts ENV[:s3_secret]
+  puts "s3 bucket"
+  puts ENV[:bucket]
+ #  unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
+ #    redirect '/'
+ #  end
+ #  while blk = tmpfile.read(65536)
+ #    AWS::S3::Base.establish_connection!(
+ #    :access_key_id     => ENV[:s3_key],
+ #    :secret_access_key => ENV[:s3_secret])
+ #    AWS::S3::S3Object.store(name,open(tmpfile),ENV[:bucket],:access => :public_read)     
+ #  end
+ # 'success'
 end
 
 get '/gallery' do
