@@ -89,8 +89,8 @@ end
     include DataMapper::Resource
     property :id,         Serial
     property :created_at, DateTime
-    property :filename,   String
-    property :url,        String    
+    property :filename,   String, :required => true
+    property :url,        String, :required => true    
   end
 
 DataMapper.finalize
@@ -493,7 +493,13 @@ post '/upload' do
   puts "receiving a file"
   puts "saving under : "+filename
   img = Image.new(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
-  img.save
+  if img.valid?
+    img.save
+  else
+    img.errors.each do |e|
+      puts e
+    end
+  end
   while blk = tmpfile.read(65536)
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
