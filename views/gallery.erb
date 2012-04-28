@@ -1,7 +1,7 @@
 <div class="gallery">
 	<% unless @pictures.empty? %>
 		<% @pictures.each do |p| %>
-		<img src="<%= p.url %>"/>
+		<img src= "<%= p.url %>" ></img>
 		<% end %>
 	<% end %>
 </div>

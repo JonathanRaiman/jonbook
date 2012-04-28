@@ -9,5 +9,6 @@ gem "dm-sqlite-adapter"
 gem "dm-postgres-adapter"
 gem "sinatra_more"
 gem "sinatra-static-assets"
-gem 'linguistics'
-gem 'sanitize'
+gem "linguistics"
+gem "sanitize"
+

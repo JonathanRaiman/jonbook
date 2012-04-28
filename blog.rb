@@ -8,7 +8,7 @@ require 'sinatra/static_assets'
 require 'date'
 require 'linguistics'
 require 'sanitize'
-require 'FileUtils'
+#require 'FileUtils'
 require 'resolv'
 
 Linguistics::use( :en )
@@ -524,6 +524,9 @@ end
 def validate_email_spelling(email)
   email =~ /^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/ ? true : false
 end
+
+
+
 
 
 
