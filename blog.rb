@@ -486,18 +486,20 @@ post '/upload' do
   unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
     redirect '/'
   end
+  extension = File.extname(name)
+  filename = "img_uploads#{@@uploadcount}.#{extension}"
   while blk = tmpfile.read(65536)
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
     :secret_access_key => ENV[':s3_secret'])
-    AWS::S3::S3Object.store(name,open(tmpfile),BUCKET,:access => :public_read)     
+    AWS::S3::S3Object.store(filename,open(tmpfile),BUCKET,:access => :public_read)     
   end
   puts "the url is :"
-  puts "http://#{BUCKET}.s3.amazonaws.com/#{params[:image][:filename]}"
+  puts "http://#{BUCKET}.s3.amazonaws.com/#{filename}"
   puts "the filename is :"
-  puts name
-  puts "the reason for not saving are : nil"
-  img = Image.create(:filename => name, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{name}")
+  puts filename
+  puts "the reason for not saving were bad spelling"
+  img = Image.create(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
   if img.save 
     redirect '/gallery'
   else
