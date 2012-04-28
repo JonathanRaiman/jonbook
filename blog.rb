@@ -18,6 +18,7 @@ Linguistics::use( :en )
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
 BUCKET = ENV[':bucket']
+@@uploadcount = 0
 
 class Book
   include DataMapper::Resource
@@ -494,6 +495,7 @@ post '/upload' do
     :secret_access_key => ENV[':s3_secret'])
     AWS::S3::S3Object.store(filename,open(tmpfile),BUCKET,:access => :public_read)     
   end
+  @@uploadcount += 1
   puts "the url is :"
   puts "http://#{BUCKET}.s3.amazonaws.com/#{filename}"
   puts "the filename is :"
