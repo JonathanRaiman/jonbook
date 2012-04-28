@@ -8,6 +8,7 @@ require 'sinatra/static_assets'
 require 'date'
 require 'linguistics'
 require 'sanitize'
+require 'fileutils'
 #require 'FileUtils'
 require 'resolv'
 
