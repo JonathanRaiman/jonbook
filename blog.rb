@@ -17,6 +17,8 @@ Linguistics::use( :en )
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
+BUCKET = ENV[':bucket']
+
 class Book
   include DataMapper::Resource
   property :id,               Serial
@@ -488,14 +490,14 @@ post '/upload' do
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
     :secret_access_key => ENV[':s3_secret'])
-    AWS::S3::S3Object.store(name,open(tmpfile),ENV[':bucket'],:access => :public_read)     
+    AWS::S3::S3Object.store(name,open(tmpfile),BUCKET,:access => :public_read)     
   end
   puts "the url is :"
-  puts "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
+  puts "http://#{BUCKET}.s3.amazonaws.com/#{params[:image][:filename]}"
   puts "the filename is :"
-  puts params[:image][:filename]
+  puts name
   puts "the reason for not saving are : nil"
-  img = Image.create(:filename => params[:image][:filename], :created_at => Time.now, :url => "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}")
+  img = Image.create(:filename => name, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{name}")
   if img.save 
     redirect '/gallery'
   else
