@@ -18,7 +18,7 @@ Linguistics::use( :en )
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
 BUCKET = ENV[':bucket']
-@@uploadcount = 0
+@@uploadcount = 100
 
 class Book
   include DataMapper::Resource
@@ -488,7 +488,7 @@ post '/upload' do
     redirect '/'
   end
   extension = File.extname(name)
-  filename = "imguploads#{img.id}#{extension}"
+  filename = "imguploads#{@@uploadcount}#{extension}"
   img = Image.new(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
   img.save!
 
