@@ -494,6 +494,8 @@ post '/upload' do
   n.created_at = Time.now
   n.filename = params[:image][:filename]
   n.url = "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
+  puts params[:image][:filename]
+  puts "http://#{ENV[':bucket']}.s3.amazonaws.com/#{params[:image][:filename]}"
   if n.save 
     redirect '/gallery'
   else
