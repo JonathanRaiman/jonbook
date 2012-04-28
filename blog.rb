@@ -487,11 +487,13 @@ post '/upload' do
   unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
     redirect '/'
   end
+  puts "receiving a file"
   extension = File.extname(name)
   filename = "imguploads#{@@uploadcount}#{extension}"
+  puts "receiving a file"
+  puts "saving under : "+filename
   img = Image.new(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
-  img.save!
-
+  img.save
   while blk = tmpfile.read(65536)
     AWS::S3::Base.establish_connection!(
     :access_key_id     => ENV[':s3_key'],
