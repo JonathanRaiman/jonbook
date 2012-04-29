@@ -80,7 +80,11 @@
 <% end %>
       </table>
 <%else%>
-      <p id="book_listings">No books to trade.</p>
+      <table class="book_table" id="book_listings">
+            <tr>
+                  <td class="table_header">No books to trade.</td>
+            </tr>
+      </table>
 <%end%><!-- Book Listings -->
 
 <form action="/upload" method="post" enctype="multipart/form-data">
