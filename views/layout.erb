@@ -64,6 +64,7 @@
 	      		}
 	      	}
 		};
+		setInterval ("updatelistings()", 5000);
 		<% end %>
 		function updateInbox () {
 			if ($("#inbox_listings")){
@@ -72,8 +73,6 @@
 			    });
 			}
 		};
-
-		setInterval ("updatelistings()", 5000);
 		setInterval ("updateInbox()", 1200);
 
 		$("a").live('click', function (e) {
