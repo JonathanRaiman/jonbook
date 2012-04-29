@@ -55,10 +55,12 @@
 		  $('#body').val('');$('#recipient').val('');
 		});
 		function updatelistings () {
-	      	if ($("#book_listings") && $("#booksearch_term").val().length <=1){
-	            $.get('/listings', function (data){
-	                  $("#book_listings").html(data);
-	            });
+	      	if ($("#book_listings")){
+	      		if ($("#booksearch_term").val().length <=1){
+		            $.get('/listings', function (data){
+		                  $("#book_listings").html(data);
+		            });
+	      		}
 	      	}
 		};
 		function updateInbox () {
