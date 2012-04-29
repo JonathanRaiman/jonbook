@@ -54,6 +54,7 @@
 		  $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
 		  $('#body').val('');$('#recipient').val('');
 		});
+		<% if @books %>
 		function updatelistings () {
 	      	if ($("#book_listings")){
 	      		if ($("#booksearch_term").val().length <=1){
@@ -63,6 +64,7 @@
 	      		}
 	      	}
 		};
+		<% end %>
 		function updateInbox () {
 			if ($("#inbox_listings")){
 			    $.get('/inbox_listings', function (data){
