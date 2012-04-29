@@ -180,7 +180,7 @@ end
 
 get '/members' do
       redirect '/login' unless env['warden'].user
-      @title = "Members — Book Exchange"
+      @title = "Members - Book Exchange"
       @users = User.all(:order => :lastname)
       erb :members
 end
