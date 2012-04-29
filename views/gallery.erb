@@ -1,7 +1,11 @@
-<div class="gallery">
-	<% unless @pictures.empty? %>
-		<% @pictures.each do |p| %>
-		<img src= "<%= p.url %>" ></img>
+	<div class="gallery">
+		<% unless @pictures.empty? %>
+			<% @pictures.each do |p| %>
+		<div class="img_container">
+			<img src= "<%= p.url %>"></img>
+			<%= "</br>"+relative_time(Time.parse(p.taken_on.to_s))+"</br>"%>
+			<%=p.cameramodel%>
+		</div>
+			<% end %>
 		<% end %>
-	<% end %>
-</div>
+	</div>

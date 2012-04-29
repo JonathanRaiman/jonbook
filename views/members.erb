@@ -1,0 +1,66 @@
+
+<%= javascript_script_tag "https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js" %>
+<script>
+var bookowners = [
+<% @users.each do |u|%>{
+	"name":"<%=u.firstname+" "+u.lastname%>",
+	"books":<%=u.books%>,
+	"id":<%=u.id%>
+},
+<% end %>];
+var R;
+var booksize           = 6;
+var dotunhovered       = {fill:"rgb(35,36,35)", "stroke-width": 5, "stroke-opacity": "0", rx: booksize, ry:booksize, "stroke": "rgb(0,0,0)"};
+var bookappearance     = {fill:"#bf4c4c", "stroke-width": 5, "stroke-opacity": "0", "stroke": "rgb(0,0,0)"};
+var dothovered         = {fill:"#3B5998", "stroke-width": 7, "stroke-opacity": "0",rx: booksize*1.5, ry:booksize*1.5};
+var subtitleattr       = {"text-anchor":"middle"};
+window.onload = function () {
+	R = Raphael("users_train");
+	R.setSize("100%","100%");
+	drawislands(bookowners);
+};
+
+function drawislands (owners) {
+	var spacing = ($(window).width()-10*owners.length)/(owners.length+1)+10;
+	var verticalspot = $(window).height()-100;
+	for (var j=0;j<owners.length;j++){
+		R.bookisland(owners[j],spacing+j*spacing, verticalspot);
+	}
+}
+
+Raphael.fn.bookisland = function (user, x, y){
+    var island = this.ellipse(x,y,4,4).attr(dotunhovered);
+    island.attr({href: "/user/"+user["id"]});
+    island.username = user["name"];
+    island.mouseover(function (){this.hoveredisland();});
+    island.mouseout(function (){this.unhoveredisland();});
+    var set = this.set(island);
+    for (var i=0; i<user["books"];i++){
+    	var rotation = 45+(Math.random()-0.5)*8;
+    	var color = Raphael.getColor();
+    	set.push(R.path("M"+(x-15)+","+(-5+i*-50)+"l0,0,11,-11c0,0,3,-3,6,0l0,0,13,13c0,0,3,3,0,6l0,0,-11,11c0,0,-1.5,1.5,0,3c0,0,1.5,1.5,3,0l0,0,12,-12c0,0,0.5,-0.5,1,0c0,0,0.5,0.5,0,1l-12,12c0,0,-3,3,-6,0l0,0,-5,-5c0,0,-0.5,0.5,-1,0c0,0,-0.5,-0.5,0,-1l0,0,-5,-5c0,0,-0.5,0.5,-1,0c0,0,-0.5,-0.5,0,-1l0,0,-5,-5c0,0,-3,-3,0,-6z"+"m8,7l0,0,3,3l0,0,10,-10l0,0,-3,-3z").attr(bookappearance).attr({fill:"rgb("+(180+(Math.random()-0.5)*30)+", 76, 76)"}).animate({path:"M"+(x-15)+","+(y-(i+1)*booksize*6)+"l0,0,11,-11c0,0,3,-3,6,0l0,0,13,13c0,0,3,3,0,6l0,0,-11,11c0,0,-1.5,1.5,0,3c0,0,1.5,1.5,3,0l0,0,12,-12c0,0,0.5,-0.5,1,0c0,0,0.5,0.5,0,1l-12,12c0,0,-3,3,-6,0l0,0,-5,-5c0,0,-0.5,0.5,-1,0c0,0,-0.5,-0.5,0,-1l0,0,-5,-5c0,0,-0.5,0.5,-1,0c0,0,-0.5,-0.5,0,-1l0,0,-5,-5c0,0,-3,-3,0,-6z"+"m8,7l0,0,3,3l0,0,10,-10l0,0,-3,-3z"}, 1000+i*50));
+    }
+    return set;
+}
+
+Raphael.el.hoveredisland = function (){
+    this.animate(dothovered, 200);
+    var box = this.getBBox(false);
+    this.subtitle = R.subtitle(box["x"]+box["width"]/2,box["y"]+box["width"]/2+25,this.username);
+    this.subtitle.animate({"fill-opacity":1},200);
+}
+
+Raphael.fn.subtitle = function (x,y,text){
+    return this.text(x,y,text).attr(subtitleattr);
+}
+
+Raphael.el.unhoveredisland = function (object){
+    this.animate(dotunhovered, 200);
+    this.subtitle.animate({"fill-opacity":0},200, function() {
+        if (this.subtitle != null){
+        this.subtitle.remove();
+        }
+    });
+}
+</script>
+	<div id="users_train"></div>

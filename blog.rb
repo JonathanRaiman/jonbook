@@ -9,16 +9,17 @@ require 'date'
 require 'linguistics'
 require 'sanitize'
 require 'fileutils'
-#require 'FileUtils'
 require 'resolv'
 require 'aws/s3'
+require 'exifr'
+require 'mini_magick'
+require 'open-uri'
 
 Linguistics::use( :en )
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
-BUCKET = ENV[':bucket']
-@@uploadcount = 100
+BUCKET = ENV[':bucket'] || "jonbookpictures"
 
 class Book
   include DataMapper::Resource
@@ -55,6 +56,7 @@ class User
   property :email_shared,     String
   property :phone,            String
   property :phone_shared,     String
+  property :books,            Integer
 
   # Public class method than returns a user object if the caller supplies the correct name and password
   #
@@ -87,10 +89,12 @@ end
 
   class Image
     include DataMapper::Resource
-    property :id,         Serial
-    property :created_at, DateTime
-    property :filename,   String, :required => true, :length => 1..250
-    property :url,        String, :required => true, :length => 1..250
+    property :id,           Serial
+    property :created_at,   DateTime
+    property :filename,     String, :required => true, :length => 1..250
+    property :url,          String, :required => true, :length => 1..250
+    property :cameramodel,  String, :length => 0..250
+    property :taken_on,     DateTime
   end
 
 DataMapper.finalize
@@ -171,14 +175,23 @@ get '/' do
       redirect '/login' unless env['warden'].user
       @books = Book.all(:order => :author)
       @users = User.all(:order => :lastname)
-      @messages = Message.all(:recipient => env['warden'].user.id) + Message.all(:sender => env['warden'].user.id)
       erb :index
+end
+
+get '/members' do
+      redirect '/login' unless env['warden'].user
+      @title = "Members — Book Exchange"
+      @users = User.all(:order => :lastname)
+      erb :members
 end
 
 # create new task   
 post '/book/create' do
   book = Book.new(:name => Sanitize.clean(params[:name]), :author => Sanitize.clean(params[:author]), :price => params[:price], :description => Sanitize.clean(params[:description]), :owner => env['warden'].user.id, :created_at => Time.now)
   if book.save
+    user = User.get(env['warden'].user.id)
+    user.books += 1
+    user.save
     status 201
     redirect '/'  
   else
@@ -190,6 +203,9 @@ end
 post '/book/new' do
   book = Book.new(:name => Sanitize.clean(params[:name]), :author => Sanitize.clean(params[:author]), :price => params[:price] ? params[:price] : 0, :description => Sanitize.clean(params[:description]), :owner => env['warden'].user.id, :created_at => Time.now)
   if book.save
+    user = User.get(env['warden'].user.id)
+    user.books += 1
+    user.save
     status 201
   else
     status 412 
@@ -210,7 +226,7 @@ end
 
 post '/user/create' do
   if validate_email_spelling(params[:email]) and validate_email_domain(params[:email])
-    user = User.create(:firstname => Sanitize.clean(params[:firstname]), :lastname => Sanitize.clean(params[:lastname]), :created_at => Time.now, :phone => Sanitize.clean(params[:phone]), :email=>Sanitize.clean(params[:email]), :email_shared => "yes", :phone_shared => "yes", :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password]))
+    user = User.create(:firstname => Sanitize.clean(params[:firstname]), :lastname => Sanitize.clean(params[:lastname]), :created_at => Time.now, :phone => Sanitize.clean(params[:phone]), :email=>Sanitize.clean(params[:email]), :email_shared => "yes", :phone_shared => "yes", :password => OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new('sha1'), "secretsalt", params[:password]), :books => 0)
     if user.save
       status 201
       env['warden'].authenticate!
@@ -392,18 +408,23 @@ post '/book' do
   end
 end
 
-# get '/user/search' do
-#   if env['warden'].user
-#     puts params[:term]
-#     @response = User.all(:username => params[:term])
-#     # puts @response
-#     # @responsejson = []
-#     @response.each do |match|
-#       puts match.username+" found"
-#     end
-#     @response.to_json
-#   end
-# end
+get '/search.json' do
+  unless !env['warden'].user
+  content_type :json
+  if params[:term] == "FREE"
+    books = Book.all(:price => 0)
+  elsif params[:term] == "CHEAP"
+    books = Book.all(:price.lt => 10)
+  else
+    books = Book.all(:name.like => "%#{params[:term]}%")+Book.all(:author.like => "%#{params[:term]}%")+Book.all(:description.like => "%#{params[:term]}%")
+  end
+  response = []
+  books.each do |b|
+    response << {:name => b.name, :price => b.price, :author => b.author, :id => b.id, :sold => b.sold}
+  end
+  response.to_json
+  end
+end
 
 # update task
 put '/book/:id' do
@@ -452,6 +473,9 @@ end
 delete '/book/:id' do
   redirect '/login' unless env['warden'].user
   Book.get(params[:id]).destroy
+  user = User.get(env['warden'].user.id)
+  user.books -= 1
+  user.save
   redirect '/'  
 end
 
@@ -484,15 +508,18 @@ end
 # end
 
 post '/upload' do
+  redirect '/login' unless env['warden'].user
   unless params[:image] && (tmpfile = params[:image][:tempfile]) && (name = params[:image][:filename])
     redirect '/'
   end
   puts "receiving a file"
   extension = File.extname(name)
-  filename = "imguploads#{@@uploadcount}#{extension}"
+  count = Image.count
+  cameramodel = ""
+  filename = "imguploads#{count}#{extension}"
   puts "receiving a file"
   puts "saving under : "+filename
-  img = Image.new(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}")
+  img = Image.new(:filename => filename, :created_at => Time.now, :url => "http://#{BUCKET}.s3.amazonaws.com/#{filename}", :cameramodel => cameramodel, :taken_on => Time.now)
   if img.valid?
     img.save
   else
@@ -506,13 +533,38 @@ post '/upload' do
     :secret_access_key => ENV[':s3_secret'])
     AWS::S3::S3Object.store(filename,open(tmpfile),BUCKET,:access => :public_read)     
   end
-  @@uploadcount += 1
-  redirect '/gallery'
+  if extension == ".jpg" || extension == ".JPG" || extension == ".JPEG" || extension == ".jpeg"
+    picture = EXIFR::JPEG.new(open(tmpfile))
+    img.cameramodel = picture.model
+    if picture.date_time && picture.date_time.length > 10
+      img.taken_on    = picture.date_time
+    end
+    if img.save
+      redirect '/gallery'
+    else
+      redirect '/'
+    end
+  elsif extension == ".tiff" || extension == ".TIFF"
+    picture = EXIFR::TIFF.new(open(tmpfile))
+    img.cameramodel = picture.model
+    if picture.date_time
+      img.taken_on    = picture.date_time
+    end
+    if img.save
+      redirect '/gallery'
+    else
+      redirect '/'
+    end
+  else
+    redirect '/gallery'
+  end
 end
 
 get '/gallery' do
+  redirect '/login' unless env['warden'].user
+  @users = User.all(:order => :lastname)
   @pictures = Image.all(:order => :created_at)
-  erb :gallery, :layout => false
+  erb :gallery
 end
 
 
@@ -534,8 +586,10 @@ def relative_time(start_time)
        "#{diff_seconds/3600} "+pluralize((diff_seconds/3600), 'hour')+" ago"
     when (3600*24) .. (3600*24*7-1) 
        "#{diff_seconds/(3600*24)} "+pluralize((diff_seconds/(3600*24)), 'day')+" ago"
-    when (3600*24*7) .. (3600*24*30)
+    when (3600*24*7) .. (3600*24*30-1)
        "#{diff_seconds/(3600*24*7)} "+pluralize((diff_seconds/(3600*24*7)), 'week')+" ago"
+    when (3600*24*30) .. (3600*24*365.25)
+       "#{diff_seconds/(3600*24*30)} "+pluralize((diff_seconds/(3600*24*30)), 'month')+" ago"
     else
        start_time.strftime("%m/%d/%Y")
   end
@@ -556,8 +610,6 @@ end
 def validate_email_spelling(email)
   email =~ /^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$/ ? true : false
 end
-
-
 
 
 

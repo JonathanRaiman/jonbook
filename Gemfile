@@ -12,4 +12,6 @@ gem "sinatra-static-assets"
 gem "linguistics"
 gem "sanitize"
 gem "aws-s3"
+gem "exifr"
+gem "mini_magick"
 

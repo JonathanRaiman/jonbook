@@ -56,6 +56,11 @@ i{
     z-index: 3000;
 }
 
+.bottombar table {
+    width: 100%;
+        white-space:nowrap;
+}
+
 .topbar{
     position: fixed;
     top: 0px;
@@ -73,6 +78,7 @@ i{
 }
 .topbar table{
     width: 100%;
+    white-space:nowrap;
 }
 
 .topbar input[type="submit"],
@@ -181,7 +187,8 @@ i{
 .topbar input[type="text"],
 .topbar input[type="password"],
 #new_item_form input[type="text"],
-#new_item_form textarea{
+#new_item_form textarea,
+.search_table input[type="text"]{
     border: 1px solid #BDC7D8;
     -webkit-user-select: text;
     outline: none;
@@ -224,7 +231,9 @@ i{
     -webkit-appearance: none;
 }
 
-#book_listings tr:nth-of-type(2n+3), #user_book_listings tr:nth-of-type(2n+3){
+#book_listings tr:nth-of-type(2n+3),
+#user_book_listings tr:nth-of-type(2n+3),
+#booksearch_results tr:nth-of-type(2n+3){
 background: rgb(243, 246, 250);
 }
 
@@ -238,6 +247,8 @@ background: rgb(243, 246, 250);
 }
 
 .conversation {
+    padding-top: 40px;
+    padding-bottom: 50px;
     width: 100%;
     border-spacing: 0px;
     color: #333;
@@ -275,6 +286,24 @@ background: rgb(243, 246, 250);
     text-align: center;
     padding: 4px 4px;
 
+}
+.gallery{
+    padding-top: 50px;
+    background: rgb(25,26,25);
+    padding-bottom: 50px;
+    height: 100%;
+    width: 100%;
+}
+.gallery *{
+    color: rgb(200,210,200);
+}
+.gallery .img_container{
+    display: inline-block;
+    margin: 10px;
+}
+
+.gallery img{
+    max-height: 200px;
 }
 
 @media handheld, only screen and (max-width: 650px){
