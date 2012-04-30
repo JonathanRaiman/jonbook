@@ -416,7 +416,7 @@ get '/search.json' do
   elsif params[:term] == "CHEAP"
     books = Book.all(:price.lt => 10)
   else
-    books = Book.all(:name.like => "%#{params[:term]}%")+Book.all(:author.like => "%#{params[:term]}%")+Book.all(:description.like => "%#{params[:term]}%")
+    books = Book.all(:name.ilike => "%#{params[:term]}%")+Book.all(:author.ilike => "%#{params[:term]}%")+Book.all(:description.ilike => "%#{params[:term]}%")
   end
   response = []
   books.each do |b|
