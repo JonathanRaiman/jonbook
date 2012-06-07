@@ -51,7 +51,8 @@ i{
     bottom: 0px;
     height: 30px;
     width: 100%;
-    background: #3B5998;
+    background: rgb(30,31,30);
+    border-top: 1px solid #888;
     color: #D8DFEA;
     z-index: 3000;
 }
@@ -64,10 +65,10 @@ i{
 .topbar{
     position: fixed;
     top: 0px;
-    height: 30px;
+    height: 50px;
     width: 100%;
-    background: #3B5998;
-    color: #D8DFEA;
+    background: rgb(30,31,30);
+    color: rgb(245,246,245);
     z-index: 3000;
     white-space:nowrap;
     border-bottom: 1px solid #133783;
@@ -75,6 +76,9 @@ i{
     -webkit-box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
     box-shadow:  0 0 5px 2px rgba(0,0,0,0.5);
     overflow: hide;
+}
+.mainpage_logo {
+    font-size: 20px;
 }
 .topbar table{
     width: 100%;
@@ -204,13 +208,13 @@ i{
 }
 
 .mainpage_content{
-    padding-top: 50px;
+    padding-top: 75px;
     padding-bottom:50px;
     padding-left: 10px;
 }
 
 .book_table {
-    width: 600px;
+    width: 700px;
     margin-left: auto;
     margin-right: auto;
     border-spacing: 0px;
@@ -306,7 +310,7 @@ background: rgb(243, 246, 250);
     max-height: 200px;
 }
 
-@media handheld, only screen and (max-width: 650px){
+@media handheld, only screen and (max-width: 750px){
 .book_table {
   width: 95%;
 }

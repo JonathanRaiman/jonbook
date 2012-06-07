@@ -47,7 +47,7 @@
 				<% if @book.sold %>
 				<strong><%= "(sold)" %></strong>
 				<% else %>
-				<a href="/user/<%=@book.owner%>"><%="buy from "+User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname %></a>
+				<a href="/user/<%=@book.owner%>"><%="buy from "+User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname + " for " + sprintf("%.2f", @book.price) +" €" %></a>
 				<% end %>
 			</td>
 			<td>Added by <a href="/user/<%=@book.owner%>"><%= User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname %></a> <%= relative_time(Time.parse(@book.created_at.to_s)) %>.

@@ -178,6 +178,11 @@ get '/' do
       erb :index
 end
 
+get '/about' do
+      @users = User.all(:order => :lastname)
+      erb :about
+end
+
 get '/members' do
       redirect '/login' unless env['warden'].user
       @title = "Members - Book Exchange"
