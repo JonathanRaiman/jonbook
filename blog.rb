@@ -421,7 +421,7 @@ get '/search.json' do
   elsif params[:term] == "CHEAP"
     books = Book.all(:price.lt => 10, :order=> :price)
   else
-    books = Book.all(:conditions => ["name LIKE ?","%#{params[:term]}%"])+Book.all(:conditions => ["author LIKE ?","%#{params[:term]}%"])+Book.all(:conditions => ["description LIKE ?","%#{params[:term]}%"])
+    books = Book.all(:conditions => ["name ILIKE ?","%#{params[:term]}%"])+Book.all(:conditions => ["author ILIKE ?","%#{params[:term]}%"])+Book.all(:conditions => ["description ILIKE ?","%#{params[:term]}%"])
     #books = Book.all(:name.like => "%#{params[:term]}%")+Book.all(:author.like => "%#{params[:term]}%")+Book.all(:description.like => "%#{params[:term]}%")
   end
   response = []
