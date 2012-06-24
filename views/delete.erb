@@ -8,10 +8,10 @@
 		<form action="/book/<%= @book.id %>" method="post">
 		<input type="hidden" name="_method" value="delete" />
 			<td style="text-align: right">
-				<input type="submit" value="remove">
+				<input type="submit" class="white_button red" value="Remove">
 			</td>
 			<td style="text-align: left">
-				or <a <%= @ajax ?  '' : 'href="/"' %> style="font-weight:bold; cursor: pointer" onclick="$.fancybox.close()">Cancel</a>
+				or <a class="white_button" <%= @ajax ?  '' : 'href="/"' %> style="font-weight:bold; cursor: pointer" onclick="$.fancybox.close()">Cancel</a>
 			</td>
 		</form>
 		</tr>

@@ -21,8 +21,8 @@
   		<tr>
   			<td colspan="2">
                       <input type="number" name="price" min="0" max="999" id="price_editform" value="<%= sprintf("%.2f", @book.price) %>" style="width: 20%"/>€
-                      <input type="button" value="Remove" onclick="removeitem('/book/<%= @book.id %>/delete')" style="float: right"/>
-                      <input id="book_submit" type="submit" value="Update" style="float: right" />
+                      <input class="white_button grey" type="button" value="Remove" onclick="removeitem('/book/<%= @book.id %>/delete')" style="float: right"/>
+                      <input id="book_submit"  class="white_button green" type="submit" value="Update" style="float: right" />
                       <input id="sold_editform" name="sold" type="checkbox" value="sold" <%= @book.sold ? "checked" : "" %> style="float: right; display:inline-block"/><label for="sold" style="float:right">sold :</label>
   			</td>
 		</tr>
@@ -47,10 +47,10 @@
 				<% if @book.sold %>
 				<strong><%= "(sold)" %></strong>
 				<% else %>
-				<a href="/user/<%=@book.owner%>"><%="buy from "+User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname + " for " + sprintf("%.2f", @book.price) +" €" %></a>
+				<a href="/user/<%=@book.owner%>"><span class="white_button green">Buy</span> from <span class="white_button blue"><%=User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname%></span> for  <%=sprintf("%.2f", @book.price) +" €" %></a>
 				<% end %>
 			</td>
-			<td>Added by <a href="/user/<%=@book.owner%>"><%= User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname %></a> <%= relative_time(Time.parse(@book.created_at.to_s)) %>.
+			<td>Added by <a href="/user/<%=@book.owner%>" class="white_button blue"><%= User.get(@book.owner).firstname+" "+User.get(@book.owner).lastname %></a> <%= relative_time(Time.parse(@book.created_at.to_s)) %>.
 			</td>
 		</tr>
 <% end %>

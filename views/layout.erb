@@ -51,8 +51,8 @@
 		      });
 		});
 		$("#messenger").live('submit', function () {
-		  $.post('/message/create', {"body":$('#body').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
-		  $('#body').val('');$('#recipient').val('');
+		  $.post('/message/create', {"body":$('#messagebody').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
+		  $('#messagebody').val('');$('#recipient').val('');
 		});
 		<% if @books %>
 		function updatelistings () {
@@ -107,6 +107,42 @@
 		      
 		      
 		});
+		$("#messagebody").live('focus', function(e){
+			opencontacts(e);
+		});
+		$("#messagebody").live("keyup", function (){
+			var text = $("#messagebody").val().toLowerCase();
+			var contacts = $("div.contact_window").find("li").get();
+			for (var i=0;i<contacts.length;i++){
+				if ($(contacts[i]).text().toLowerCase().indexOf(text) == -1){
+					$(contacts[i]).addClass("hidden");
+				}
+				else {
+					$(contacts[i]).removeClass("hidden");
+				}
+			}
+		});
+		$("div.contact_window").find("li").live("click", function (e){
+			if (!e){
+				e = window.event;
+			}
+			id = $(e.target).attr("data-id");
+			$(e.target).parent().find(".selected").removeClass("selected");
+			$(e.target).addClass("selected");
+			$("#recipient").val(id);
+			$("#messagebody").focus();
+			$(e.target).parent().parent().animate({"opacity":0}, 500, function () {
+			});
+		});
+		function closecontacts(e){
+			if (!e){
+				e = window.event;
+			}
+			$(e.target).parent().find("div.contact_window").css({"display":"none"})
+		}
+		function opencontacts(e) {
+			$("div.contact_window").animate({"opacity":1}, 250);
+		}
 		function removeitem (address) {
 		      var input = address.split('/');
 		      if (input[1] == "book" && input[3]==null){
@@ -221,7 +257,7 @@
 						<input type="password" name="password"/>
 					</td>
 					<td>
-						<input type="submit" value="Log in"/>
+						<input type="submit" class="white_button navy" value="Log in"/>
 					</td>
 	</form>
 					<td>
@@ -229,7 +265,7 @@
 <% else %>
 					
 					<td style="text-align: right" class="mainpage_logout"><font class="signin_comment">Signed up as </font><a href="/user/<%=env['warden'].user.id%>" style="color:white"><%= env['warden'].user.firstname+" "+env['warden'].user.lastname %></a>, 
-						<input type="button" onClick="location.href='/logout'" value="Logout?" style="display: inline-block; vertical-align: middle; margin-bottom: 7px"/>
+						<span class="white_button navy" onClick="location.href='/logout'">Logout?</span>
 					</td>
 <% end %>
 				</tr>
@@ -240,20 +276,21 @@
 
 <% if env['warden'].user %>
 		<div class="bottombar">
+			<div class="contact_window">
+				<ul>
+					<% User.all(:order => :lastname).each do |user| %>
+						<% if user != env['warden'].user %>
+							<li data-id="<%=user.id%>"><%=user.firstname+" "+user.lastname%></li>
+						<% end %>
+					<% end %>
+				</ul>
+			</div>
 			<form onsubmit="return false;" id="messenger">
 				<table>
 					<tr>
 						<td>
-							<label for="recipient">To:</label>
-							<select name="recipient" id="recipient">
-								<option value></option>
-								<% @users.each do |user|%>
-								<% if user.id != env['warden'].user.id %>
-								<option value="<%=user.id%>"><%=user.firstname+" "+user.lastname%></option>
-								<% end%>
-								<% end%>
-							</select>
-							<input type="text" name="body" id="body">
+							<input type="hidden" id="recipient" value="">
+							<input type="text" name="body" id="messagebody">
 							<input type="submit" value="Send"/>
 						</td>
 						<td style="text-align: right"><a href="/inbox">Inbox</a>
