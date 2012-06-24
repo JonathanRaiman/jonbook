@@ -110,6 +110,9 @@
 		$("#messagebody").live('focus', function(e){
 			opencontacts(e);
 		});
+		$("#messagebody").live('click', function(e){
+			opencontacts(e);
+		});
 		$("#messagebody").live("keyup", function (){
 			var text = $("#messagebody").val().toLowerCase();
 			var contacts = $("div.contact_window").find("li").get();
