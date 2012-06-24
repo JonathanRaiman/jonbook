@@ -113,6 +113,9 @@
 		$("#messagebody").live('click', function(e){
 			opencontacts(e);
 		});
+		$("#messagebody").live('blur', function(e){
+			$(".contact_window").animate({"opacity":0},250);
+		});
 		$("#messagebody").live("keyup", function (){
 			var text = $("#messagebody").val().toLowerCase();
 			var contacts = $("div.contact_window").find("li").get();
