@@ -52,7 +52,7 @@
 		});
 		$("#messenger").live('submit', function () {
 		  $.post('/message/create', {"body":$('#messagebody').val(),"recipient": $('#recipient').val(), "sender": $('#sender').val()});
-		  $('#messagebody').val('');$('#recipient').val('');
+		  $('#messagebody').val('').attr("placeholder","message sent...");
 		});
 		<% if @books %>
 		function updatelistings () {
@@ -141,6 +141,7 @@
 			$(e.target).parent().find("div.contact_window").css({"display":"none"})
 		}
 		function opencontacts(e) {
+			$("div.contact_window").find("li").removeClass("hidden");
 			$("div.contact_window").animate({"opacity":1}, 250);
 		}
 		function removeitem (address) {
@@ -290,7 +291,7 @@
 					<tr>
 						<td>
 							<input type="hidden" id="recipient" value="">
-							<input type="text" name="body" id="messagebody">
+							<input type="text" name="body" id="messagebody" placeholder="">
 							<input type="submit" value="Send"/>
 						</td>
 						<td style="text-align: right"><a href="/inbox">Inbox</a>
